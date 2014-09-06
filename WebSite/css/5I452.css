@@ -1,0 +1,395 @@
+body {
+	font-family:helvetica;
+	font-size: 13px;
+	width: 1270px;
+	background-color: #ffffff;
+	color: #000000;
+}
+p {
+	text-align: justify;
+	margin-top: 3px;
+	margin-right: 3px;
+}
+h1 {
+	width: 900px;
+	font-size: 20px;
+	font-weight: bold;
+	line-height: 25px;
+	margin-top: 10px;
+	margin-right: 3px;
+	color: #003399;
+	border-bottom-width: 2px;
+	border-bottom-style: solid;
+	border-bottom-color: #003399;
+}
+h2 {
+	width: 900px;
+	font-size: 18px;
+	font-weight: bold;
+	line-height: 20px;
+	color: #003399;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #003399;
+	margin-top: 8px;
+	margin-right: 3px;
+}
+h3 {
+	width: 785px;
+	font-size: 15px;
+	font-weight: bold;
+	line-height: 15px;
+	color: #003399;
+	width: 565px;
+	margin-top: 4px;
+	margin-right: 3px;
+}
+a:link {
+	color: #6699ff;
+	font-weight: bold;
+	text-decoration: none;
+}
+a:visited {
+	color: #6699ff;
+	font-weight: bold;
+	text-decoration: none;
+}
+body.ul {
+	list-style: none;
+	margin-top: -1px;
+	margin-left: 20px;
+	padding-left: 20px;
+	text-indent: -5px;
+}
+li {
+	text-align: justify;
+	font-size: 13px;
+	margin-top: 3px;
+	margin-right: 3px;
+	list-style-type:square;
+}
+em{
+	color:#003399;
+	font-weight: bold;
+}
+.figure {
+	text-align: center;;
+/*	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: #ffffff;*/
+}
+/* pour la position des titre, les menus et de la bande à gauche */
+.background-main {
+	top: 0px;
+	left: 0px;
+	position: absolute;
+	z-index: 0;
+	/*visibility: visible;*/
+}
+.lasaison {
+	top: 70px;
+	left: 1050px;
+	position: absolute;
+	z-index: 3;
+}
+.logoUPMC {
+	top: 65px;
+	left: 40px;
+	position: absolute;
+	z-index: 1;
+}
+.logoSAR {
+	top: 60px;
+	left: 40px;
+	position: absolute;
+	z-index: 1;
+	opacity:0.6;
+	filter:alpha(opacity=60); /* For IE8 and earlier */
+}
+.QRcode {
+	top: 65px;
+	left: 1150px;
+	position: absolute;
+	z-index: 2;
+}
+.background-others {
+	top: 0px;
+	left: 0px;
+	position: absolute;
+	z-index: 0;
+	/*visibility: visible;*/
+}
+.mainmenu {
+	top: 0px;
+	left: 0px;
+	z-index: 2;
+	text-align: center;
+}
+.maintitle-main {
+	font-weight: bold; 
+	color: #ffffff;
+	font-size: 36px;
+	top: 60px;
+	left: 280px;
+	width: 910px;
+	position: absolute;
+	z-index: 1;
+	/*visibility: visible;*/
+}
+.overtitle-others {
+	color: #ffffff;
+	font-size: 18px;
+	top: 65px;
+	left: 280px;
+	width: 710px;
+	position: absolute;
+	z-index: 1;
+	color:#FFFF66;
+	/*visibility: visible;*/
+}
+
+.maintitle-others {
+	font-weight: bold; 
+	color: #ffffff;
+	font-size: 30px;
+	top: 95px;
+	left: 280px;
+	width: 710px;
+	position: absolute;
+	z-index: 1;
+	/*visibility: visible;*/
+}
+.content {
+	width: 1200px;
+	top: 190px;
+	left: 50px;
+	position: absolute;
+	z-index: 1;
+	/*visibility: visible;*/
+}
+.footer-main {
+	font-size: 10px;
+	color: #ffffff;
+	top: 660px;
+	left: 40px;
+	position: absolute;
+	z-index: 1;
+	/*visibility: visible;*/
+}
+.footer-others {
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: #003399;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #003399;
+	font-size: 10px;
+	background-color: #ace4fe;
+	/*visibility: visible;*/
+	text-align: center;
+	/*width:500px;*/
+}
+/*Special pour la premiere page*/
+
+div.fond-resume {
+	background-color:#000000;
+	opacity:0.6;
+	filter:alpha(opacity=60); /* For IE8 and earlier */
+	top: 370px;
+	left: 100px;
+	width: 1040px;
+	height:240px;
+	position: absolute;
+}
+.resume {
+	font-size:12px;
+	color: #ffffff;
+	top: 375px;
+	left: 120px;
+	width: 1000px;
+	position: absolute;
+	z-index: 2;
+}
+
+.hotstuff {
+	position: absolute;
+	top: 500px;
+	left: 124px;	
+	z-index: 1;
+}
+.address {
+	font-size:12px;
+	top: 230px;
+	left: 124px;
+	width: 250px;
+	position: absolute;
+	z-index: 1;
+}
+.addressH {
+	font-weight: bold; 
+	color: #efd3a3;
+	font-size:13px;
+}
+.sourceevidence {
+	font-weight: bold; 
+	color: #ff0000;
+}
+.texttt {
+	font-weight: bold; 
+	font-family:"Courier New";
+}
+.num-titre {
+	color: #ff0000;
+}
+.listing {
+	margin-left: 40px;
+	font-family:"Courier New";
+}
+.underconstruction {
+	top: -50px;
+	left: 500px;
+	position: absolute;
+	z-index: 3;
+	opacity:0.6;
+	filter:alpha(opacity=60); /* For IE8 and earlier */
+}
+/* Expliquer la signbaletique des cours */
+table.legende-signaletique {
+	border: 2px solid #003399;
+	width:600px;
+}
+table.legende-signaletique th.carte {
+	text-align: center;
+	font-weight: bold;
+	width: 150px;
+	border-right : solid 1px #003399;
+	color: #003399;
+}
+table.legende-signaletique th.page {
+	text-align: center;
+	font-weight: bold;
+	width: 150px;
+	border-right : solid 1px #003399;
+	color: #003399;
+}
+table.legende-signaletique th.explication {
+	text-align: center;
+	font-weight: bold;
+	width: 300px;
+	color: #003399;
+}
+table.legende-signaletique td.carte {
+	border-right : solid 1px #003399;
+}
+table.legende-signaletique td.page {
+	border-right : solid 1px #003399;
+	text-align: center;	
+}
+table.legende-signaletique td.explication {	
+
+}
+table.legende-signaletique tr.impair {
+	background-color: #f9f3c0;
+}
+
+/* Mettre en exhergue des elements ou une table des matieres */
+.TdM {
+/*	border-left: 2px solid #008080;*/
+	width : 200px;
+	position:relative;
+	left : 10px;
+	font-size: 13px;
+	font-family: Arial, Helvetica, sans-serif;
+	padding: 5px 5px 5px 5px;
+	background-color: #efd9a5;
+}
+.enveloppeTdM {
+	width : 220px;
+	float:right;
+}
+.TdMl1 {
+	font-weight: bold;
+	font-size: 14px;
+	text-align: center;
+	margin-top: 5px;
+	margin-bottom:5px;
+	border-bottom : 1px solid #000000;
+	border-top : 1px solid #000000;
+	background-color: #ace4fe;
+	padding-top: 3px;
+}
+.TdMimage {
+	font-size: 15px;
+	text-align: center;
+	vertical-align: top;
+}
+.TdMURLslides {
+	font-size: 14px;
+	text-align: center;
+	vertical-align: top;
+	margin-top: 5px;
+	margin-bottom:5px;
+	border-bottom : 1px solid #000000;
+	border-top : 1px solid #000000;
+	width : 160px;
+	margin-left:20px;
+}
+.TdMl2 {
+	font-weight: bold;
+	font-size: 12px;
+	text-align: left;
+	margin-top: 5px;
+}
+.TdMl3 {
+	font-style: normal;
+	font-size: 12px;
+	text-align: center;
+	margin-top: 4px;
+}
+.TdMl4 {
+	font-style: normal;
+	font-size: 12px;
+	text-align: left;
+	margin-top: 5px;
+	margin-left: 40px;
+}
+
+/* "Macros" à la latex */
+.maptag {
+	color: #004000;
+}
+
+/* Lom: Pour afficher la description du modele, on hover sur son nom dans la table*/
+a.signalisation {
+     position:relative;
+     text-decoration:none; 
+     font-family:helvetica; 
+     text-align:center; 
+     font-size:12px;
+}
+a.signalisation:hover {
+     background: none; 
+     z-index: 50; 
+}
+a.signalisation span { 
+    display: none;
+}
+a.signalisation:hover span {
+	 color:#191970;
+     display: block; 
+     position: absolute;
+     top: -10px; 
+     left: 0px;
+     font-family: helvetica; 
+     text-align:justify;
+     font-size:12px;
+     font-weight:normal;
+     width:200px;
+     background: #ffffcc;
+     padding: 2px;
+     border: 1px solid #62c0f4;
+     border-left: 10px solid #62c0f4;
+}
+
