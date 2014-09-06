@@ -4,8 +4,17 @@ GaNyMEDE
 GeNeric Moocs  &amp; coursEs Development Environment
 
 
+Description
+-----------
+
+This project is a small environment that allows one to develop a course and generate automatically a compagnon web site
+from metadata. Such courses can then be deployed on some home page.
+
+This environment also allows deployment of the courses into the France Université Numérique platform (openedx?).
+
+
 Directory content
-=================
+-----------------
 
 ConstructionData: it contains the metadata for your course. At this stage, it contains a small
 example
@@ -19,12 +28,12 @@ Scripts: it contains the scripts used to build
 Website: the minimum files for the web site (others are generated)
 
 Usage
-=====
+-----
 
 type "make" to discover the options of the Makefile.
 
 Warnings
-========
+--------
 
 All of this is at a quite early stage, even if development started one year ago... a lot of modification was done
 and there is a need for setting up a more proper version.
