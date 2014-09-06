@@ -22,8 +22,14 @@ Usage
 =====
 
 
+Warnings
+========
 
-Complains
-=========
+All of this is at a quite early stage, even if development started one year ago... a lot of modification was done
+and there is a need for setting up a more proper version.
 
 Sorry, most of it is still in french (procrastination and lack of time ;-)
+
+PS: all of this was tested under a Mac under MacOS 10.9
+
+PPS: at this stage, perl package Roman is required (http://search.cpan.org/~chorny/Roman-1.22/lib/Roman.pm)
