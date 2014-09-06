@@ -15,6 +15,7 @@ do_the_work () {
 		### sort -u | sort -n parce que sort -un ou sort -u -n fait sauter les 0 s'il y en a
 		cat $cartoDir/elements-cours.csv | tr '\t' '@' | grep -v "^#" | grep -v '^$' > /tmp/selected_data.$$
 		Target="$cartoDir/cartographie.dot"
+		globalSeqNumber=1
 	fi
 
 
@@ -44,6 +45,11 @@ do_the_work () {
 			echo >> tmp_nodes
 			NUM_SEMAINE=$(expr $NUM_SEMAINE + 1)
 		else
+			if [ "$globalSeqNumber" ] ; then
+				romancounter=$(perl  -e 'use Roman ; print uc roman('$globalSeqNumber')')
+				TITRE=$romancounter' - '$TITRE
+				globalSeqNumber=$(expr $globalSeqNumber + 1)
+			fi
 			if [ "$TYPE" = "BASE" ] ; then
 				COLOR="#ea9a9a"
 			elif [ "$TYPE" = "OPTIONNEL" ] ; then
