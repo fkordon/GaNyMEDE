@@ -21,6 +21,7 @@ Website: the minimum files for the web site (others are generated)
 Usage
 =====
 
+type "make" to discover the options of the Makefile.
 
 Warnings
 ========
