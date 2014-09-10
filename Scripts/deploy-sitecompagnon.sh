@@ -220,9 +220,7 @@ for numchap in $LISTE_SEMAINES ; do
 		globalSeqNumber=$(cat /tmp/globalseq)
 		uniqueid=$(echo "$LINE" | cut -f 1)
 		sequence=$(echo "$LINE" | cut -f 3)
-		set -x
 		titre=$(echo "$LINE" | cut -f 4 | sed -e s'/\\n/ /g')
-		set +x
 		seqtype=$(echo "$LINE" | cut -f 5)
 		ifoptional=$(echo "$LINE" | cut -f 9)
 		starting=$(echo "$LINE" | cut -f 12)
