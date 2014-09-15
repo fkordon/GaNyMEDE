@@ -251,25 +251,20 @@ for numchap in $LISTE_SEMAINES ; do
 			echo "ERREUR - URL de la vidéo de la séquence $formatted_seq manquant!!!"
 			exit 1
 		fi
-		echo '<p>Si la s&eacute;quence ne s&#x27;affiche pas dans le cadre ci-dessous, vous
-devez la t&eacute;l&eacute;charger depuis le cartouche.</p>
+ 		echo '<p>Si la s&eacute;quence ne s&#x27;affiche pas dans le cadre ci-dessous, vous
+ devez la t&eacute;l&eacute;charger depuis le cartouche.</p>
 
-<script type="text/javascript" src="jwplayer/jwplayer.js"></script>
-<div id="Sequence">Loading the player...</div>
-<script type="text/javascript">
-    jwplayer("Sequence").setup({
-        file: "'$URLvideo'",
-		height: 360,
-		width: 640,
-        image: "images/image-video.jpg"
-    });
-</script>
+<video width="640px" controls>
+  <source src="'$URLvideo'" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
 ' > $webDataDir/c$formatted_chap-s$formatted_seq-sequence.html
+
 		# le cartouche par défaut
 		case $seqtype in
 			"BASE")
 				echo '<div class="TdMl1">Important</div>' > $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;
-				echo '<div class="TdMimage"><img src="images/seq-basex50.png"></div>' >> $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;;
+				echo '<div class="TdMimage"><img src="images/seq-basex50.png" alt="logo-seq-base" /></div>' >> $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;;
 			"OPTIONNEL")
 				if [ -z "$ifoptional" ] ; then
 					echo ""
@@ -277,18 +272,18 @@ devez la t&eacute;l&eacute;charger depuis le cartouche.</p>
 					echo -n "   "
 				fi
 				echo '<div class="TdMl1">Rappels de notions</div>' > $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;
-				echo '<div class="TdMimage"><img src="images/seq-optx50.png"></div>' >> $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;
+				echo '<div class="TdMimage"><img src="images/seq-optx50.png" alt="logo-seq-optionnel" /></div>' >> $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;
 				echo '<div class="TdMl2">Connaissances requises pour sauter cette section</div>' >> $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;
 				echo '<div class="TdMl3">'$ifoptional'</div>' >> $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;;
 			"ILLUSTRATION")
 				echo '<div class="TdMl1">Illustration par un exemple</div>' > $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;
-				echo '<div class="TdMimage"><img src="images/seq-examplex50.png"></div>' >> $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;;
+				echo '<div class="TdMimage"><img src="images/seq-examplex50.png" alt="logo-seq-illustration" /></div>' >> $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;;
 			"DEMONSTRATION")
 				echo '<div class="TdMl1">D&eacute;monstration en ligne</div>' > $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;
-				echo '<div class="TdMimage"><img src="images/seq-demox50.png"></div>' >> $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;;
+				echo '<div class="TdMimage"><img src="images/seq-demox50.png" alt="logo-seq-demonstration" /></div>' >> $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;;
 			"EXERCICE")
 				echo '<div class="TdMl1">Pr&eacute;sentation d&#x27;un exercice</div>' > $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;
-				echo '<div class="TdMimage"><img src="images/seq-exox50.png"></div>' >> $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;;
+				echo '<div class="TdMimage"><img src="images/seq-exox50.png" alt="logo-seq-exercice" /></div>' >> $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;;
 		esac
 		if [ -f $dataDir/$uniqueid-slides.pdf ] ; then
 			cp $dataDir/$uniqueid-slides.pdf $webPdfDir/c$formatted_chap-s$formatted_seq-slides.pdf
