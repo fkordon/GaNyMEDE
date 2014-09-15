@@ -254,7 +254,7 @@ for numchap in $LISTE_SEMAINES ; do
  		echo '<p>Si la s&eacute;quence ne s&#x27;affiche pas dans le cadre ci-dessous, vous
  devez la t&eacute;l&eacute;charger depuis le cartouche.</p>
 
-<video width="640px" controls>
+<video width="640px" height="360" controls="controls">
   <source src="'$URLvideo'" type="video/mp4" />
   Your browser does not support the video tag.
 </video>
