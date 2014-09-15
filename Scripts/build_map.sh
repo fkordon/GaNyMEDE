@@ -6,9 +6,13 @@ cartoDir=$baseDir/ConstructionData/Cartographie
 do_the_work () {
 	if [ $# -eq 1 ] ; then
 		# get smallest week number
+		set -x
 		NUM_SEMAINE=$1
-		sed -n $(cat $cartoDir/elements-cours.csv | tr '\t' '@' | cut -d @ -f 2 | grep -n ^1 | cut -d : -f 1 | sed -e 's/$/p/' | tr '\n' ';' ;) $cartoDir/elements-cours.csv | grep -v \# | tr '\t' '@' > /tmp/selected_data.$$
+		sed -n $(cat $cartoDir/elements-cours.csv | tr '\t' '@' | cut -d @ -f 2 | grep -n ^$NUM_SEMAINE | cut -d : -f 1 | sed -e 's/$/p/' | tr '\n' ';' ;) $cartoDir/elements-cours.csv | grep -v \# | tr '\t' '@' > /tmp/selected_data.$$
 		Target="$cartoDir/cartographie-"$(perl -e 'printf "%0.2d", '$1).dot
+		cat $cartoDir/prologue.dot > $Target
+		grep sem_${NUM_SEMAINE}_ $cartoDir/contraintes.dot >> $Target
+		set +x
 	else
 		# get smallest week number
 		NUM_SEMAINE=$(grep -v ^$ $cartoDir/elements-cours.csv | grep -v '#' | cut -f 2 | sort -u | sort -n | head -1)
@@ -16,13 +20,12 @@ do_the_work () {
 		cat $cartoDir/elements-cours.csv | tr '\t' '@' | grep -v "^#" | grep -v '^$' > /tmp/selected_data.$$
 		Target="$cartoDir/cartographie.dot"
 		globalSeqNumber=1
+		cat $cartoDir/prologue.dot $cartoDir/contraintes.dot > $Target
 	fi
-
 
 	echo > $cartoDir/tmp_nodes
 	echo > $cartoDir/tmp_links
 
-	cat $cartoDir/prologue.dot > $Target
 
 	cat /tmp/selected_data.$$ | while read LINE ; do
 		ID=$(echo $LINE | cut -d '@' -f 1 | cut -d ':' -f 2)

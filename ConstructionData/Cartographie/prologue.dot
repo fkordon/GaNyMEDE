@@ -1,24 +1,10 @@
 digraph {
 
+
+ranksep = .22;
+
 # labelloc="t";
 # label="Cartographie des vidéos du cours Programmation iOS";
 
 node [shape = rectangle;fontname="Helvetica";fontsize="8";height=0.4]
-
-
-########################################################################
-# Il est possible ici de rajouter des contraintes de placement pour dot
-# afin que le placement soit plus ergonomique que ce qui est proposé par
-# défaut...
-
-#subgraph deb{rank = same; debprologue, debsemaine1, debsemaine2, debsemaine3, debsemaine4, debsemaine5, debsemaine6, debsemaine7, debsemaine8, debsemaine9, debsemaine10}
-#subgraph fin{rank = same; finsemaine3, finsemaine4, finsemaine5, finsemaine6, finsemaine7, finsemaine8, finsemaine9, finsemaine10}
-
-#subgraph intermediaire {rank = same ; finprologue, finsemaine1, finsemaine2}
-
-
-#subgraph exo{rank = same; s29, s30, s48, s49, s68, s69, s90, s91, s110, s111}
-
-# Fin des contraintes...
-########################################################################
 

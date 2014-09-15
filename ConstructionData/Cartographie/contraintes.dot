@@ -1,0 +1,21 @@
+
+
+########################################################################
+# Il est possible ici de rajouter des contraintes de placement pour dot
+# afin que le placement soit plus ergonomique que ce qui est proposé par
+# défaut...
+
+subgraph deb{rank = same; debsemaine1}
+subgraph fin{rank = same; finsemaine1}
+
+subgraph exo{rank = same; seq019, seq020}
+
+# les conventions sont que les contraintes de placement pour la semaine <x>
+# sont definies au moyen de clusters qui on le prefixe sem_<x>_<quelquechose>
+
+subgraph sem_1_1 {rank = same; seq005, seq004}
+subgraph sem_1_2 {rank = same; seq006, seq007}
+subgraph sem_1_3 {rank = same; seq016, seq015}
+
+# Fin des contraintes...
+########################################################################
