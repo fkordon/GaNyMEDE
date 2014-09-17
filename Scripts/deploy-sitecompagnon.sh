@@ -113,7 +113,7 @@ $DEEPPAGEFLOAT="semaine-'$formatted_semaine'.html";
 include ("functions/content.php");
 ?>
 '> $webDir/semaine-$formatted_semaine.php
-	echo '<div class="TdMl1">S&eacute;quences associ&eacute;es</div>' > $webTdmDir/semaine-$formatted_semaine.html
+	echo '<div class="TdMl1">S&eacute;quences de la semaine</div>' > $webTdmDir/semaine-$formatted_semaine.html
 done
 echo
 
