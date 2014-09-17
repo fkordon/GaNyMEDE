@@ -231,7 +231,7 @@ for numchap in $LISTE_SEMAINES ; do
 		# construction des éléments de la séquence (il y a au moins un titre, un résumé et une vidéo)
 		if [ -z "$titre" ]; then
 			echo
-			echo "ERREUR - Titre de la séquence $formatted_seq manquant!!!"
+			echo "ERREUR - Titre de la séquence $formatted_seq ($uniqueid) manquant!!!"
 			exit 1
 		fi
 		romancounter=$(perl  -e 'use Roman ; print uc roman('$globalSeqNumber')')
@@ -239,7 +239,7 @@ for numchap in $LISTE_SEMAINES ; do
 		echo '<div class="TdMl2"><a href="index.php?C='$formatted_chap'&amp;S='$formatted_seq'">'$romancounter' - '$titre'</a></div>' >> $webTdmDir/semaine-$formatted_chap.html
 		if [ ! -f $dataDir/$uniqueid-resume.html ] ; then
 			echo
-			echo "ERREUR - résumé de la séquence $formatted_seq manquant!!!"
+			echo "ERREUR - résumé de la séquence $formatted_seq ($uniqueid) manquant!!!"
 			exit 1
 		fi
 		cat $dataDir/$uniqueid-resume.html >> $webDataDir/c$formatted_chap-s$formatted_seq-resume.html
@@ -248,7 +248,7 @@ for numchap in $LISTE_SEMAINES ; do
 		fi
 		if [ -z "$URLvideo" ]; then
 			echo
-			echo "ERREUR - URL de la vidéo de la séquence $formatted_seq manquant!!!"
+			echo "ERREUR - URL de la vidéo de la séquence $formatted_seq ($uniqueid) manquant!!!"
 			exit 1
 		fi
  		echo '<p>Si la s&eacute;quence ne s&#x27;affiche pas dans le cadre ci-dessous, vous
