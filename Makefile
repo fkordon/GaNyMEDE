@@ -63,13 +63,13 @@ clean:
 	@make present WHAT="Nettoyage des fichiers générés"
 	rm -f $(CARTO_DIR)/carto*.dot
 	rm -f $(CARTO_DIR)/*.pdf
+	rm -f $(DATA_DIR)/semaine-*.csv
 	rm -f $(LOCAL_WEB_SITE)/data/*
 	rm -f $(LOCAL_WEB_SITE)/svg/*
 	rm -f $(LOCAL_WEB_SITE)/content/semaine-*.html
 	rm -f $(LOCAL_WEB_SITE)/semaine-*.php
 	rm -f $(LOCAL_WEB_SITE)/pdf/*.pdf
 	rm -f $(LOCAL_WEB_SITE)/TdM/semaine*.html
-	rm -f $(DATA_DIR)/semaine-*.csv
 	rm -f $(LOCAL_WEB_SITE)/functions/functions.php
 	rm -f $(LOCAL_WEB_SITE)/functions/moddate.php
 
