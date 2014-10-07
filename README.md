@@ -40,6 +40,6 @@ and there is a need for setting up a more proper version.
 
 Sorry, most of it is still in french (procrastination and lack of time ;-)
 
-PS: all of this was tested under a Mac under MacOS 10.9
+PS: all of this was tested under a Mac running MacOS 10.9
 
 PPS: at this stage, perl package Roman is required (http://search.cpan.org/~chorny/Roman-1.22/lib/Roman.pm)
