@@ -18,7 +18,7 @@ help:
 	@echo
 	@echo "cartographie : génération de la cartographie du cours"
 	@echo "web          : génération du site compagnon du cours"
-	@echo "deploy       : déploiement sur une cible du sithe compagnon du cours"
+	@echo "deploy       : déploiement sur une cible du site compagnon du cours"
 	@echo "mooc         : construction de l'archive prête à être déployée"
 	@echo "clean        : suppression des fichiers générés"
 	@echo
