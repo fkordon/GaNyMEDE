@@ -16,11 +16,11 @@ SCRIPT_DIR=Scripts
 help:
 	@make present WHAT="Aide en ligne"
 	@echo
-	@echo "cartographie : génération de la cartographie du cours"
-	@echo "web          : génération du site compagnon du cours"
-	@echo "deploy       : déploiement sur une cible du site compagnon du cours"
-	@echo "mooc         : construction de l'archive prête à être déployée"
-	@echo "clean        : suppression des fichiers générés"
+	@echo "map    : génération de la cartographie du cours"
+	@echo "web    : génération du site compagnon du cours"
+	@echo "deploy : déploiement sur une cible du site compagnon du cours"
+	@echo "mooc   : construction de l'archive prête à être déployée"
+	@echo "clean  : suppression des fichiers générés"
 	@echo
 
 present:
@@ -31,13 +31,13 @@ present:
 	
 
 # generer le fichier dot pour construire la cartographe (pdf + liens) du cours
-cartographie:
+map:
 	@make present WHAT="Production de la cartographie du cours"
 	@bash $(SCRIPT_DIR)/build_map.sh
 	@bash $(SCRIPT_DIR)/build_map.sh `grep -v ^\# $(CARTO_DIR)/elements-cours.csv | cut -f 2 | sort -un`
 
 web:
-	make cartographie
+	make map
 	@make present WHAT="Génération du site compagnon de l'UE"
 	bash $(SCRIPT_DIR)/deploy-sitecompagnon.sh
 
