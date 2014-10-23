@@ -157,7 +157,7 @@ cat /tmp/part0.$$ | (output="$webfunctionDir/functions.php"
 		titre=$(echo "$LINE" | cut -f 4 | sed -e s'/\\\\n/ /g')
 		echo '   $MAX_MENU_L2['$numsemaine'] = 0;' >> $output
 		echo '         $menuTitle['$numsemaine'] = array("Semaine '$numsemaine'");' >> $file_part1
-		echo '         $sectionsTitle['$numsemaine'] = array("Semaine '$numsemaine', '$titre'");' >> $file_part2
+		echo '         $sectionsTitle['$numsemaine'] = array("Semaine '$numsemaine' &mdash; '$titre'");' >> $file_part2
 		echo '         $sectionsURL['$numsemaine'] = array("semaine-'$(format_number $numsemaine)'.php");' >> $file_part3
 		echo '         $sectionsContentURL['$numsemaine'] = array("semaine-'$(format_number $numsemaine)'.html");' >> $file_part4
 	done
