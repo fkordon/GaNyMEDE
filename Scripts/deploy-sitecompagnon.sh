@@ -51,6 +51,7 @@ echo "Dispatching global metadata"
 echo -n "   "
 for semaine in $LISTE_SEMAINES  ; do
 	formatted_semaine=$(format_number $semaine)
+	EXO=""
 	echo -n "."
 	if [ -f $dataDir/semaine-$formatted_semaine.csv ] ; then
 		rm -f $dataDir/semaine-$formatted_semaine.csv
