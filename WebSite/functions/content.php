@@ -80,6 +80,7 @@
 <?php
 	if ($level1 == '' && $level2 < 2 && $cours == '') {
 		echo '<div class="lasaison"><img src="images/lasaison.png" alt="saison 3"></div>';
+		echo '<div class="ganymedelogo">Powered by<br /><a href="https://github.com/fkordon/GaNyMEDE"><img src="images/logo-GaNyMEDE.png"></a></div>';
 		echo '<div class="maintitle-main">';
 	} else {
 		echo '<div class="overtitle-others">';
@@ -98,7 +99,6 @@
 	}
 	echo '</div>';
 ?>
-<div class="ganymedelogo">Powered by<br /><a href="https://github.com/fkordon/GaNyMEDE"><img src="images/logo-GaNyMEDE.png"></a></div>
 <?php
 	if ($CONTENT != '') {
 		echo '<div class="content">';
