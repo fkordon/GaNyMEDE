@@ -98,7 +98,7 @@
 	}
 	echo '</div>';
 ?>
-
+<div class="ganymedelogo">Powered by<br /><a href="https://github.com/fkordon/GaNyMEDE"><img src="images/logo-GaNyMEDE.png"></a></div>
 <?php
 	if ($CONTENT != '') {
 		echo '<div class="content">';
