@@ -191,13 +191,13 @@ for chapter in semaine-*.csv ; do
 		if [ -f "$seqid-liens.html" -o -f "$seqid-extras.csv" ] ; then
 			# des liens associés + extras le cas échéant
 			echo '   <vertical url_name="'$formatted_chap'-'$formatted_seq'-'$seqid'-liens"/>' >> "$output"
-			echo '<html display_name="Autres éléments" filename="liens-'$formatted_chap'-'$formatted_seq'-'$seqid'-data"/>' >> "$html_dir/liens-$formatted_chap-$formatted_seq-$seqid-data.xml"
-			(output="$vertical_dir/liens-$formatted_chap-$formatted_seq-$seqid.xml"
+			echo '<html display_name="Autres éléments" filename="'$formatted_chap'-'$formatted_seq'-'$seqid'-liens-data"/>' >> "$html_dir/$formatted_chap-$formatted_seq-$seqid-liens-data.xml"
+			(output="$vertical_dir/$formatted_chap-$formatted_seq-$seqid-liens.xml"
 			echo '<vertical display_name="Liens utiles">' >> "$output"
 			echo '   <html url_name="'$formatted_chap'-'$formatted_seq'-'$seqid'-liens-data"/>' >> "$output"
 			echo '</vertical>' >> "$output")
 			if [ -f "$seqid-liens.html" ] ; then
-				(output="$html_dir/$formatted_chap-$formatted_seq-data-$seqid-liens.html"
+				(output="$html_dir/$formatted_chap-$formatted_seq-$seqid-liens-data.html"
 				echo '<h2>Liens utiles</h2>' >> "$output"
 				cat $seqid-liens.html >> "$output")
 			fi
