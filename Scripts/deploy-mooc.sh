@@ -79,6 +79,7 @@ for semaine in $LISTE_SEMAINES  ; do
 		sed -n ${elem}p $cartoDir/elements-cours.csv >> $dataDir/semaine-$(format_number $semaine).csv
 	done
 done
+echo
 
 ######################################################################
 # demarrage
@@ -151,7 +152,7 @@ video_dir="$TARGET_DIR/video"
 problem_dir="$TARGET_DIR/problem"
 discussion_dir="$TARGET_DIR/discussion"
 for chapter in semaine-*.csv ; do
-	numchap=$(expr $(echo "$chapter" | cut -d '-' -f 2 | cut -d '.' -f 1) +0) # to remove leadings 0 when necessary
+	numchap=$(expr $(echo "$chapter" | cut -d '-' -f 2 | cut -d '.' -f 1) + 0) # to remove leadings 0 when necessary
 	chap=$(basename $chapter .csv)
 	echo -n "   chapter $numchap "
 	formatted_chap="$(format_number $numchap)"
@@ -185,23 +186,23 @@ for chapter in semaine-*.csv ; do
 		output="$TARGET_DIR/sequential/semaine-$formatted_chap-rubrique-$formatted_seq-$seqid.xml"
 		echo '<sequential display_name="'$(echo "$LINE" | cut -f 4 | sed -e s'/\\n/ /g')'" start="'$starting'">' >> "$output"
 		# il y a au moins un résumé et une vidéo
-		echo '   <vertical url_name="resume-'$formatted_chap'-'$formatted_seq'-'$seqid'"/>' >> "$output"
-		echo '   <vertical url_name="video-'$formatted_chap'-'$formatted_seq'-'$seqid'"/>' >> "$output"
+		echo '   <vertical url_name="'$formatted_chap'-'$formatted_seq'-'$seqid'-resume"/>' >> "$output"
+		echo '   <vertical url_name="'$formatted_chap'-'$formatted_seq'-'$seqid'-video"/>' >> "$output"
 		if [ -f "$seqid-liens.html" -o -f "$seqid-extras.csv" ] ; then
 			# des liens associés + extras le cas échéant
-			echo '   <vertical url_name="liens-'$formatted_chap'-'$formatted_seq'-'$seqid'"/>' >> "$output"
+			echo '   <vertical url_name="'$formatted_chap'-'$formatted_seq'-'$seqid'-liens"/>' >> "$output"
 			echo '<html display_name="Autres éléments" filename="liens-'$formatted_chap'-'$formatted_seq'-'$seqid'-data"/>' >> "$html_dir/liens-$formatted_chap-$formatted_seq-$seqid-data.xml"
 			(output="$vertical_dir/liens-$formatted_chap-$formatted_seq-$seqid.xml"
 			echo '<vertical display_name="Liens utiles">' >> "$output"
-			echo '   <html url_name="liens-'$formatted_chap'-'$formatted_seq'-'$seqid'-data"/>' >> "$output"
+			echo '   <html url_name="'$formatted_chap'-'$formatted_seq'-'$seqid'-liens-data"/>' >> "$output"
 			echo '</vertical>' >> "$output")
 			if [ -f "$seqid-liens.html" ] ; then
-				(output="$html_dir/liens-$formatted_chap-$formatted_seq-data-$seqid.html"
+				(output="$html_dir/$formatted_chap-$formatted_seq-data-$seqid-liens.html"
 				echo '<h2>Liens utiles</h2>' >> "$output"
 				cat $seqid-liens.html >> "$output")
 			fi
 			if [ -f "$seqid-extras.csv" ] ; then
-				(output="$html_dir/liens-$formatted_chap-$formatted_seq-$seqid-data.html"
+				(output="$html_dir/$formatted_chap-$formatted_seq-$seqid-liens-data.html"
 				echo '<h2>Éléments complémentaires</h2>' >> "$output"
 				grep -a -v '^###' $seqid-extras.csv | (CRT_RUBRIQUE=""
 				while read LINE ; do
@@ -221,17 +222,17 @@ for chapter in semaine-*.csv ; do
 				echo '</ul>' >> "$output"))
 			fi
 		fi
-		echo '   <vertical url_name="probleme-'$formatted_chap'-'$formatted_seq'-'$seqid'"/>' >> "$output"
+		echo '   <vertical url_name="'$formatted_chap'-'$formatted_seq'-'$seqid'-probleme"/>' >> "$output"
 		echo '</sequential>' >> "$output"
 		# generer les descripteurs d'une sous-rubrique
 		# le résumé (obligatoire)
-		output="$vertical_dir/resume-$formatted_chap-$formatted_seq-$seqid.xml"
+		output="$vertical_dir/$formatted_chap-$formatted_seq-$seqid-resume.xml"
 		echo '<vertical display_name="Résumé de la séquence '$sequence' (cours '$numchap')">' >> "$output"
-		echo '   <html url_name="resume-'$formatted_chap'-'$formatted_seq'-'$seqid'-data"/>' >> "$output"
+		echo '   <html url_name="'$formatted_chap'-'$formatted_seq'-'$seqid'-resume-data"/>' >> "$output"
 		echo '</vertical>' >> "$output"
 		# générer les fichiers du résumé
-		echo '<html display_name="Résumé de la séquence '$sequence' (cours '$numchap')" filename="resume-'$formatted_chap'-'$formatted_seq'-'$seqid'-data"/>' >> "$html_dir/resume-$formatted_chap-$formatted_seq-$seqid-data.xml"
-		output="$html_dir/resume-$formatted_chap-$formatted_seq-$seqid-data.html"
+		echo '<html display_name="Résumé de la séquence '$sequence' (cours '$numchap')" filename="'$formatted_chap'-'$formatted_seq'-'$seqid'-resume-data"/>' >> "$html_dir/$formatted_chap-$formatted_seq-$seqid-resume-data.xml"
+		output="$html_dir/$formatted_chap-$formatted_seq-$seqid-resume-data.html"
 		echo '<h2>Résumé de la séquence</h2>' > "$output"
 		cat $seqid-resume.html >> "$output"
 		if [ "$motsclef" ] ; then
@@ -248,23 +249,23 @@ for chapter in semaine-*.csv ; do
 			fi
 		fi
 		# la vidéo (obligatoire)
-		output="$vertical_dir/video-$formatted_chap-$formatted_seq-$seqid.xml"
+		output="$vertical_dir/$formatted_chap-$formatted_seq-$seqid-video.xml"
 		echo '<vertical display_name="Vidéo de la séquence">' >> "$output"
-		echo '   <video url_name="video-'$formatted_chap'-'$formatted_seq'-'$seqid'-data"/>' >> "$output"
+		echo '   <video url_name="'$formatted_chap'-'$formatted_seq'-'$seqid'-video-data"/>' >> "$output"
 		echo '</vertical>' >> "$output"
 		# générer les fichiers de la vidéo
-		output="$video_dir/video-$formatted_chap-$formatted_seq-$seqid-data.xml"
+		output="$video_dir/$formatted_chap-$formatted_seq-$seqid-video-data.xml"
 		echo '<video display_name="Vidéo de la séquence" html5_sources="[&quot;'$dailymotionid'&quot;]" youtube_id_1_0="">' >> "$output"
 		echo '   <source src="'$dailymotionid'"/>' >> "$output"
 		echo '</video>' >> "$output"
 		# le QCM (optionnel)
 		# générer les fichiers du QCM si besoin est
 		if [ -f $seqid-QCM.csv ] ; then
-			output="$vertical_dir/probleme-$formatted_chap-$formatted_seq-$seqid.xml"
+			output="$vertical_dir/$formatted_chap-$formatted_seq-$seqid-probleme.xml"
 			echo '<vertical display_name="Questionnaire de la séquence '$sequence' (cours '$numchap')">' >> "$output"
-			echo '   <problem url_name="probleme-'$formatted_chap'-'$formatted_seq'-'$seqid'-data"/>' >> "$output"
+			echo '   <problem url_name="'$formatted_chap'-'$formatted_seq'-'$seqid'-probleme-data"/>' >> "$output"
 			echo '</vertical>' >> "$output"
-			output="$problem_dir/probleme-$formatted_chap-$formatted_seq-$seqid-data.xml"
+			output="$problem_dir/$formatted_chap-$formatted_seq-$seqid-probleme-data.xml"
 			echo '<problem display_name="Questionnaire de la séquence '$sequence' (cours '$numchap')" markdown="null">' >> "$output"
 			grep -a -v ^# $seqid-QCM.csv | sort -n | while read QCMLINE ; do
 				numq=$(echo "$QCMLINE" | cut -f 4)
@@ -314,12 +315,12 @@ for chapter in semaine-*.csv ; do
 		fi
 	done)
 	# on va egalement disposer d'une rubrique "bilan" avec juste un QCM permettant de cocher ce qui a été fait
-	echo '   <sequential url_name="bilan-semaine-'$formatted_chap'"/>' >> "$TARGET_DIR/chapter/$chap.xml"
-	output="$TARGET_DIR/sequential/bilan-semaine-$formatted_chap.xml"
+	echo '   <sequential url_name="semaine-'$formatted_chap'-bilan"/>' >> "$TARGET_DIR/chapter/$chap.xml"
+	output="$TARGET_DIR/sequential/semaine-$formatted_chap-bilan.xml"
 	echo '<sequential display_name="Bilan de la semaine '$numchap'">' >> "$output"
-	echo '   <problem url_name="bilan-semaine-'$formatted_chap'-data"/>' >> "$output"
+	echo '   <problem url_name="semaine-'$formatted_chap'-bilan-data"/>' >> "$output"
 	echo '</sequential>' >> "$output"
-	output="$problem_dir/bilan-semaine-"$formatted_chap"-data.xml"
+	output="$problem_dir/semaine-"$formatted_chap"-bilan-data.xml"
 	echo '<problem display_name="Bilan de la semaine '$numchap'" markdown="null">' >> "$output"
 	echo '   <p>Cochez les actions que vous avez réalisées cette semaine afin de faire un bilan et vous assurer de n'"'"'avoir rien oublié.</p>' >> "$output"
 	echo '      <choiceresponse>' >> "$output"
@@ -330,7 +331,7 @@ for chapter in semaine-*.csv ; do
 			formatted_seq="$(format_number $sequence)"
 			typeseq=$(echo "$LINE" | cut -f 5)
 			if [ "$typeseq" = "EXERCICE" ] ; then
-				echo '            <choice correct="true">J'"'"'ai réalisé l'"'"'exercice «'$(echo "$LINE" | cut -f 4 | cut -d '«' -f 2 | cut -d '»' -f 1)'»</choice>' >> "$output"
+				echo '            <choice correct="true">J'"'"'ai réalisé l'"'"'exercice '$(echo "$LINE" | cut -f 4)'</choice>' >> "$output"
 			else
 				echo '            <choice correct="true">J'"'"'ai regardé la vidéo «'$(echo "$LINE" | cut -f 4 | sed -e s'/\\n/ /g')'»</choice>' >> "$output"
 				if [ -f "$seqid-QCM.csv" ] ; then
