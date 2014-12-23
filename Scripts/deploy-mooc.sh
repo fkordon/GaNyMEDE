@@ -185,26 +185,25 @@ for chapter in semaine-*.csv ; do
 		output="$TARGET_DIR/sequential/semaine-$formatted_chap-rubrique-$formatted_seq-$seqid.xml"
 		echo '<sequential display_name="'$(echo "$LINE" | cut -f 4 | sed -e s'/\\n/ /g')'" start="'$starting'">' >> "$output"
 		# il y a au moins un résumé et une vidéo
-		echo '   <vertical url_name="resume-'$formatted_chap'-'$formatted_seq'"/>' >> "$output"
-		echo '   <vertical url_name="video-'$formatted_chap'-'$formatted_seq'"/>' >> "$output"
+		echo '   <vertical url_name="resume-'$formatted_chap'-'$formatted_seq'-'$seqid'"/>' >> "$output"
+		echo '   <vertical url_name="video-'$formatted_chap'-'$formatted_seq'-'$seqid'"/>' >> "$output"
 		if [ -f "$seqid-liens.html" -o -f "$seqid-extras.csv" ] ; then
 			# des liens associés + extras le cas échéant
-			echo '   <vertical url_name="liens-'$formatted_chap'-'$formatted_seq'"/>' >> "$output"
-			echo '<html display_name="Autres éléments" filename="liens-'$formatted_chap'-'$formatted_seq'-'$seqid'-data"/>' >> "$html_dir/liens-$formatted_chap-$formatted_seq-data.xml"
-			(output="$vertical_dir/liens-$formatted_chap-$formatted_seq.xml"
+			echo '   <vertical url_name="liens-'$formatted_chap'-'$formatted_seq'-'$seqid'"/>' >> "$output"
+			echo '<html display_name="Autres éléments" filename="liens-'$formatted_chap'-'$formatted_seq'-'$seqid'-data"/>' >> "$html_dir/liens-$formatted_chap-$formatted_seq-$seqid-data.xml"
+			(output="$vertical_dir/liens-$formatted_chap-$formatted_seq-$seqid.xml"
 			echo '<vertical display_name="Liens utiles">' >> "$output"
 			echo '   <html url_name="liens-'$formatted_chap'-'$formatted_seq'-'$seqid'-data"/>' >> "$output"
 			echo '</vertical>' >> "$output")
-			if [ -f "../chapitres/semaine-$formatted_chap/liens-$formatted_seq.html" ] ; then
-				(output="$html_dir/liens-$formatted_chap-$formatted_seq-data.html"
+			if [ -f "$seqid-liens.html" ] ; then
+				(output="$html_dir/liens-$formatted_chap-$formatted_seq-data-$seqid.html"
 				echo '<h2>Liens utiles</h2>' >> "$output"
-				cat ../chapitres/semaine-$formatted_chap/liens-$formatted_seq.html >> "$output")
+				cat $seqid-liens.html >> "$output")
 			fi
-			if [ -f "../chapitres/semaine-$formatted_chap/extras-$formatted_seq.csv" ] ; then
-				(output="$html_dir/liens-$formatted_chap-$formatted_seq-data.html"
+			if [ -f "$seqid-extras.csv" ] ; then
+				(output="$html_dir/liens-$formatted_chap-$formatted_seq-$seqid-data.html"
 				echo '<h2>Éléments complémentaires</h2>' >> "$output"
-				grep -a -v '^###' "../chapitres/semaine-$formatted_chap/extras-$formatted_seq.csv" | sort -n > /tmp/toto-$$
-				(CRT_RUBRIQUE=""
+				grep -a -v '^###' $seqid-extras.csv | (CRT_RUBRIQUE=""
 				while read LINE ; do
 					RUBRIQUE=$(echo $LINE | cut -d ',' -f 3)
 					TEXTE=$(echo $LINE | cut -d ',' -f 4)
@@ -219,55 +218,55 @@ for chapter in semaine-*.csv ; do
 					fi
 					echo '   <li><a href="'"$LIENS"'">'"$TEXTE"'</a></li>' >> "$output"
 				done
-				echo '</ul>' >> "$output") < /tmp/toto-$$)
+				echo '</ul>' >> "$output"))
 			fi
 		fi
-		echo '   <vertical url_name="probleme-'$formatted_chap'-'$formatted_seq'"/>' >> "$output"
+		echo '   <vertical url_name="probleme-'$formatted_chap'-'$formatted_seq'-'$seqid'"/>' >> "$output"
 		echo '</sequential>' >> "$output"
 		# generer les descripteurs d'une sous-rubrique
 		# le résumé (obligatoire)
-		output="$vertical_dir/resume-$formatted_chap-$formatted_seq.xml"
+		output="$vertical_dir/resume-$formatted_chap-$formatted_seq-$seqid.xml"
 		echo '<vertical display_name="Résumé de la séquence '$sequence' (cours '$numchap')">' >> "$output"
-		echo '   <html url_name="resume-'$formatted_chap'-'$formatted_seq'-data"/>' >> "$output"
+		echo '   <html url_name="resume-'$formatted_chap'-'$formatted_seq'-'$seqid'-data"/>' >> "$output"
 		echo '</vertical>' >> "$output"
 		# générer les fichiers du résumé
-		echo '<html display_name="Résumé de la séquence '$sequence' (cours '$numchap')" filename="resume-'$formatted_chap'-'$formatted_seq'-data"/>' >> "$html_dir/resume-$formatted_chap-$formatted_seq-data.xml"
-		output="$html_dir/resume-$formatted_chap-$formatted_seq-data.html"
+		echo '<html display_name="Résumé de la séquence '$sequence' (cours '$numchap')" filename="resume-'$formatted_chap'-'$formatted_seq'-'$seqid'-data"/>' >> "$html_dir/resume-$formatted_chap-$formatted_seq-$seqid-data.xml"
+		output="$html_dir/resume-$formatted_chap-$formatted_seq-$seqid-data.html"
 		echo '<h2>Résumé de la séquence</h2>' > "$output"
-		cat ../chapitres/semaine-$formatted_chap/resume-$formatted_seq.html >> "$output"
+		cat $seqid-resume.html >> "$output"
 		if [ "$motsclef" ] ; then
 			echo '<h2>Mots clefs</h2>' >> "$output"
 			echo "<p>$motsclef.</p>" >> "$output"
 		fi
-		if [ -f ../chapitres/semaine-$formatted_chap/transparents-$formatted_seq.pdf ] ; then
+		if [ -f "$seqid-slides.pdf" ] ; then
 			echo '<h2>Transparents (pdf)</h2>' >> "$output"
 			if [ "$NO_PDF" ] ; then
 				echo '<p>Mode "léger" activé => les éléments "lourds" du MOOC ne sont pas déployées (supprimez le paramètre "-leger" dans la ligne de commande de deploy_mooc.sh).</p>' >> "$output"
 			else
-				cp ../chapitres/semaine-$formatted_chap/transparents-$formatted_seq.pdf "$TARGET_DIR/static/transparents-$formatted_chap-$formatted_seq.pdf"
-				echo '<p>Le <a href="/static/transparents-'$formatted_chap'-'$formatted_seq'.pdf">pdf des transparents présentés est disponible ici</a>.</p>' >> "$output"
+				cp $seqid-slides.pdf "$TARGET_DIR/static/transparents-$formatted_chap-$formatted_seq-$seqid.pdf"
+				echo '<p>Le <a href="/static/transparents-'$formatted_chap'-'$formatted_seq'-'$seqid'.pdf">pdf des transparents présentés est disponible ici</a>.</p>' >> "$output"
 			fi
 		fi
 		# la vidéo (obligatoire)
-		output="$vertical_dir/video-$formatted_chap-$formatted_seq.xml"
+		output="$vertical_dir/video-$formatted_chap-$formatted_seq-$seqid.xml"
 		echo '<vertical display_name="Vidéo de la séquence">' >> "$output"
-		echo '   <video url_name="video-'$formatted_chap'-'$formatted_seq'-data"/>' >> "$output"
+		echo '   <video url_name="video-'$formatted_chap'-'$formatted_seq'-'$seqid'-data"/>' >> "$output"
 		echo '</vertical>' >> "$output"
 		# générer les fichiers de la vidéo
-		output="$video_dir/video-$formatted_chap-$formatted_seq-data.xml"
+		output="$video_dir/video-$formatted_chap-$formatted_seq-$seqid-data.xml"
 		echo '<video display_name="Vidéo de la séquence" html5_sources="[&quot;'$dailymotionid'&quot;]" youtube_id_1_0="">' >> "$output"
 		echo '   <source src="'$dailymotionid'"/>' >> "$output"
 		echo '</video>' >> "$output"
 		# le QCM (optionnel)
 		# générer les fichiers du QCM si besoin est
-		if [ -f ../chapitres/semaine-$formatted_chap/QCM-$formatted_seq.csv ] ; then
-			output="$vertical_dir/probleme-$formatted_chap-$formatted_seq.xml"
+		if [ -f $seqid-QCM.csv ] ; then
+			output="$vertical_dir/probleme-$formatted_chap-$formatted_seq-$seqid.xml"
 			echo '<vertical display_name="Questionnaire de la séquence '$sequence' (cours '$numchap')">' >> "$output"
-			echo '   <problem url_name="probleme-'$formatted_chap'-'$formatted_seq'-data"/>' >> "$output"
+			echo '   <problem url_name="probleme-'$formatted_chap'-'$formatted_seq'-'$seqid'-data"/>' >> "$output"
 			echo '</vertical>' >> "$output"
-			output="$problem_dir/probleme-$formatted_chap-$formatted_seq-data.xml"
+			output="$problem_dir/probleme-$formatted_chap-$formatted_seq-$seqid-data.xml"
 			echo '<problem display_name="Questionnaire de la séquence '$sequence' (cours '$numchap')" markdown="null">' >> "$output"
-			grep -a -v ^# "../chapitres/semaine-$formatted_chap/QCM-$formatted_seq.csv" | sort -n | while read QCMLINE ; do
+			grep -a -v ^# $seqid-QCM.csv | sort -n | while read QCMLINE ; do
 				numq=$(echo "$QCMLINE" | cut -f 4)
 				textq=$(echo "$QCMLINE" | cut -f 5)
 				typeq=$(echo "$QCMLINE" | cut -f 6)
@@ -314,19 +313,7 @@ for chapter in semaine-*.csv ; do
 			echo '</problem>' >> "$output"
 		fi
 	done)
-	# descripteur de la sous-rubrique contenant le forum
-	output="$TARGET_DIR/sequential/forum-semaine-$formatted_chap.xml"
-	echo '<sequential display_name="'$discussion_name'">' >> "$output"
-	echo '   <vertical url_name="forum-semaine-'$formatted_chap'"/>' >> "$output"
-	echo '</sequential>' >> "$output"
-	output="$TARGET_DIR/vertical/forum-semaine-$formatted_chap.xml"
-	echo '<vertical display_name="'$discussion_name'">' >> "$output"
-	echo '   <discussion url_name="forum-semaine-'$formatted_chap'"/>' >> "$output"
-	echo '</vertical>' >> "$output"
-	# descripteur du forum en lui-même
-	output="$discussion_dir/forum-semaine-$formatted_chap.xml"
-	echo '<discussion discussion_category="semaine-'$formatted_chap'" discussion_id="semaine-'$formatted_chap'" discussion_target="'$discussion_name'"/>' >> "$output"
-	# on va egelament disposer d'une rubrique "bilan" avec juste un QCM permettant de cocher ce qui a été fait
+	# on va egalement disposer d'une rubrique "bilan" avec juste un QCM permettant de cocher ce qui a été fait
 	echo '   <sequential url_name="bilan-semaine-'$formatted_chap'"/>' >> "$TARGET_DIR/chapter/$chap.xml"
 	output="$TARGET_DIR/sequential/bilan-semaine-$formatted_chap.xml"
 	echo '<sequential display_name="Bilan de la semaine '$numchap'">' >> "$output"
@@ -346,7 +333,7 @@ for chapter in semaine-*.csv ; do
 				echo '            <choice correct="true">J'"'"'ai réalisé l'"'"'exercice «'$(echo "$LINE" | cut -f 4 | cut -d '«' -f 2 | cut -d '»' -f 1)'»</choice>' >> "$output"
 			else
 				echo '            <choice correct="true">J'"'"'ai regardé la vidéo «'$(echo "$LINE" | cut -f 4 | sed -e s'/\\n/ /g')'»</choice>' >> "$output"
-				if [ -f ../chapitres/semaine-$formatted_chap/QCM-$formatted_seq.csv ] ; then
+				if [ -f "$seqid-QCM.csv" ] ; then
 					echo '            <choice correct="true">J'"'"'ai répondu au questionnaire associé à la vidéo «'$(echo "$LINE" | cut -f 4 | sed -e s'/\\n/ /g')'»</choice>' >> "$output"
 				fi
 			fi
@@ -362,12 +349,6 @@ for chapter in semaine-*.csv ; do
 	echo '</chapter>' >> "$TARGET_DIR/chapter/$chap.xml"
 	echo
 done)
-
-echo
-echo
-echo "TERMINE POUR L'INSTANT!!!"
-exit
-
 
 ######################################################################
 # construction de l'archive
