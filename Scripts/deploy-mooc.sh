@@ -116,6 +116,8 @@ echo $K_EFFORT > "$TARGET_DIR/about/effort.html"
 
 if [ -f $syllDir/doc-pedagogiques.html ] ; then
 	cp $syllDir/doc-pedagogiques.html "$TARGET_DIR/info/handouts.html"
+else
+	echo "Warning: no pedagogical information (file $syllDir/doc-pedagogiques.html)"
 fi
 
 ######################################################################
