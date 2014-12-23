@@ -1,5 +1,5 @@
 # identifiant	num cours	num seq	titre	type	durée (s)	succ	depend	prérequis si optionnel	mots clefs	URL video	date publication (a-m-jTh:m:sZ)	id Dailymotion				old num cours	old num seq
-debsemaine1	1	0	Longos exsudatos	DEB	0	seq001											
+debsemaine1	1	0	L'ongos\\nexsudatos &eacute; ?	DEB	0	seq001											
 seq001	1	1	Dignus innoxius acciderat quod exsecratione	BASE	60	seq002			mot1, mot2, mot3	http://pagesperso-systeme.lip6.fr/Fabrice.Kordon/NI438-2013/videos/fullactivities-ios7-iphone.mp4							
 seq002	1	2	Voragines discurrunt per globos praetermitto	DEMONSTRATION	60	seq003,seq004			mot1, mot2, mot3	http://pagesperso-systeme.lip6.fr/Fabrice.Kordon/NI438-2013/videos/fullactivities-ios7-iphone.mp4							
 seq003	1	3	Nihilo quod quod lenius necem	OPTIONNEL	60	seq004	seq002	vous le savez deja	mot1, mot2, mot3	http://pagesperso-systeme.lip6.fr/Fabrice.Kordon/NI438-2013/videos/fullactivities-ios7-iphone.mp4							

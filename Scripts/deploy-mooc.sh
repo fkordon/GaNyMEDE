@@ -123,22 +123,16 @@ fi
 
 cp $cartoDir/cartographie.pdf "$TARGET_DIR/static"
 
-
-echo
-echo
-echo "TERMINE POUR L'INSTANT!!!"
-exit
-
-
 ######################################################################
 # la structure du cours (chapitres + informations globales)
 echo '<course url_name="'$K_MOOC_ID'" org="'$K_INSTITUTION'" course="UPMC-'$K_MOOC_ID'"/>' > "$TARGET_DIR/course.xml"
 
-
 OUTPUT="$TARGET_DIR/course/${K_MOOC_ID}.xml"
 echo '<course course_image="pano_image.jpg" display_name="'$K_TITLE'" end="'$K_MOOC_END'" enrollment_end="'$K_ENROLL_END'" enrollment_start="'$K_ENROLL_START'" start="'$K_MOOC_START'">' > $OUTPUT
-(cd ../chapitres
-for chap in * ; do
+(cd $dataDir
+for chapter in semaine-*.csv ; do
+	#chap=$(echo "$LINE" | cut -f 4 | tr "'\" |&,;#\\?" "_")
+	chap=$(basename $chapter .csv)
 	echo '   <chapter url_name="'$chap'"/>'
 done) >> $OUTPUT
 echo '</course>' >> $OUTPUT
@@ -148,54 +142,56 @@ echo '</course>' >> $OUTPUT
 # les sous-rubriques 
 
 echo "Generating chapters"
-(cd ../chapitres
+(cd $dataDir
 vertical_dir="$TARGET_DIR/vertical"
 html_dir="$TARGET_DIR/html"
 video_dir="$TARGET_DIR/video"
 problem_dir="$TARGET_DIR/problem"
 discussion_dir="$TARGET_DIR/discussion"
-for numchap in $LISTE_SEMAINES ; do
+for chapter in semaine-*.csv ; do
+	numchap=$(expr $(echo "$chapter" | cut -d '-' -f 2 | cut -d '.' -f 1) +0) # to remove leadings 0 when necessary
+	chap=$(basename $chapter .csv)
 	echo -n "   chapter $numchap "
-	chap="semaine-"$(format_number $numchap)
 	formatted_chap="$(format_number $numchap)"
-	num=$(cut -f 3 $chap/elements-cours.csv | grep -a -n ^0$ | cut -d ':' -f 1)
+	num=$(cut -f 3 $chapter | grep -a -n ^0$ | cut -d ':' -f 1)
 	# le titre du chapitre
-	chaptitle=$(format_number $numchap)' : '$(sed -n ${num}p $chap/elements-cours.csv | cut -f 4 | sed -e s'/\\\\n/ /g')
-	starting=$(sed -n ${num}p $chap/elements-cours.csv | cut -f 12)
-	if [ "$SEE_ALL" ] ; then
+	chaptitle=$(format_number $numchap)' : '$(sed -n ${num}p $chapter| cut -f 4 | sed -e s'/\\\\n/ /g')
+	starting=$(sed -n ${num}p $chapter | cut -f 12)
+	if [ "$SEE_ALL" -o "$starting" = "" ] ; then
 		# indiquer une date de publication anterieure au début réel du MOOC pour
 		# tout voir sur le MOOC-bac-à-sable
-		starting="2014-03-03T00:01:00Z"
+		starting=$K_MOOC_START
 	fi
 	echo '<chapter display_name="'$chaptitle'" start="'$starting'">' >> "$TARGET_DIR/chapter/$chap.xml"
-	grep -a -v ^# $chap/elements-cours.csv | grep -a -v FIN | grep -a -v DEB | \
+	grep -a -v ^# $chapter| grep -a -v FIN | grep -a -v DEB | \
 	(while read LINE; do
 		echo -n "."
+		seqid=$(echo "$LINE" | cut -f 1)
 		sequence=$(echo "$LINE" | cut -f 3)
 		starting=$(echo "$LINE" | cut -f 12)
 		if [ "$SEE_ALL" ] ; then
 			# indiquer une date de publication anterieure au début réel du MOOC
 			# pour tout voir sur le MOOC-bac-à-sable
-			starting="2014-03-03T00:01:00Z"
+			starting=$K_MOOC_START
 		fi
 		motsclef=$(echo "$LINE" | cut -f 10)
 		dailymotionid=$(echo "$LINE" | cut -f 13)
 		formatted_seq="$(format_number $sequence)"
 		# declaration de la rubrique dans le chapitre
-		echo '   <sequential url_name="semaine-'$formatted_chap'-rubrique-'$formatted_seq'"/>' >> "$TARGET_DIR/chapter/$chap.xml"
+		echo '   <sequential url_name="semaine-'$formatted_chap'-rubrique-'$formatted_seq'-'$seqid'"/>' >> "$TARGET_DIR/chapter/$chap.xml"
 		# construction de la rubrique
-		output="$TARGET_DIR/sequential/semaine-$formatted_chap-rubrique-$formatted_seq.xml"
+		output="$TARGET_DIR/sequential/semaine-$formatted_chap-rubrique-$formatted_seq-$seqid.xml"
 		echo '<sequential display_name="'$(echo "$LINE" | cut -f 4 | sed -e s'/\\n/ /g')'" start="'$starting'">' >> "$output"
 		# il y a au moins un résumé et une vidéo
 		echo '   <vertical url_name="resume-'$formatted_chap'-'$formatted_seq'"/>' >> "$output"
 		echo '   <vertical url_name="video-'$formatted_chap'-'$formatted_seq'"/>' >> "$output"
-		if [ -f "../chapitres/semaine-$formatted_chap/liens-$formatted_seq.html" -o -f "../chapitres/semaine-$formatted_chap/extras-$formatted_seq.csv" ] ; then
+		if [ -f "$seqid-liens.html" -o -f "$seqid-extras.csv" ] ; then
 			# des liens associés + extras le cas échéant
 			echo '   <vertical url_name="liens-'$formatted_chap'-'$formatted_seq'"/>' >> "$output"
-			echo '<html display_name="Autres éléments" filename="liens-'$formatted_chap'-'$formatted_seq'-data"/>' >> "$html_dir/liens-$formatted_chap-$formatted_seq-data.xml"
+			echo '<html display_name="Autres éléments" filename="liens-'$formatted_chap'-'$formatted_seq'-'$seqid'-data"/>' >> "$html_dir/liens-$formatted_chap-$formatted_seq-data.xml"
 			(output="$vertical_dir/liens-$formatted_chap-$formatted_seq.xml"
 			echo '<vertical display_name="Liens utiles">' >> "$output"
-			echo '   <html url_name="liens-'$formatted_chap'-'$formatted_seq'-data"/>' >> "$output"
+			echo '   <html url_name="liens-'$formatted_chap'-'$formatted_seq'-'$seqid'-data"/>' >> "$output"
 			echo '</vertical>' >> "$output")
 			if [ -f "../chapitres/semaine-$formatted_chap/liens-$formatted_seq.html" ] ; then
 				(output="$html_dir/liens-$formatted_chap-$formatted_seq-data.html"
@@ -316,13 +312,6 @@ for numchap in $LISTE_SEMAINES ; do
 			echo '</problem>' >> "$output"
 		fi
 	done)
-	# on va disposer d'un forum par semaine pour regrouper les discussions
-	if [ "$numchap" -eq 0 ] ; then
-		discussion_name="Discussions sur les questions générales"
-	else
-		discussion_name="Discussions à propos de la semaine $numchap"
-	fi
-	echo '   <sequential url_name="forum-semaine-'$formatted_chap'"/>' >> "$TARGET_DIR/chapter/$chap.xml"
 	# descripteur de la sous-rubrique contenant le forum
 	output="$TARGET_DIR/sequential/forum-semaine-$formatted_chap.xml"
 	echo '<sequential display_name="'$discussion_name'">' >> "$output"
@@ -346,7 +335,7 @@ for numchap in $LISTE_SEMAINES ; do
 	echo '   <p>Cochez les actions que vous avez réalisées cette semaine afin de faire un bilan et vous assurer de n'"'"'avoir rien oublié.</p>' >> "$output"
 	echo '      <choiceresponse>' >> "$output"
 	echo '         <checkboxgroup type="MultipleChoice">' >> "$output"
-	grep -a -v ^# $chap/elements-cours.csv | grep -a -v FIN | grep -a -v DEB | \
+	grep -a -v ^# $chapter| grep -a -v FIN | grep -a -v DEB | \
 		(while read LINE ; do
 			sequence=$(echo "$LINE" | cut -f 3)
 			formatted_seq="$(format_number $sequence)"
@@ -371,6 +360,11 @@ for numchap in $LISTE_SEMAINES ; do
 	echo '</chapter>' >> "$TARGET_DIR/chapter/$chap.xml"
 	echo
 done)
+
+echo
+echo
+echo "TERMINE POUR L'INSTANT!!!"
+exit
 
 
 ######################################################################
