@@ -23,6 +23,8 @@ gen_cartographie() {
 	# il faut enlever les 6 premieres lignes pour inserer le svg produit dans une page web ensuite
 }
 
+source ./Scripts/check_dependencies.sh
+
 # pour créer des archives sans fichiers parasites(sous MacOS)...
 export COPYFILE_DISABLE=true
 
@@ -38,6 +40,9 @@ webDataDir=$webDir/data
 webcontentDir=$webDir/content
 webfunctionDir=$webDir/functions
 webTdmDir=$webDir/TdM
+syllDir=$dataDir/Syllabus-MOOC
+
+source $syllDir/configure-mooc.sh
 
 rm -f $webDataDir/*
 
@@ -136,8 +141,8 @@ cat /tmp/part0.$$ | (output="$webfunctionDir/functions.php"
 	file_part2="/tmp/part2.$$"
 	echo '      function getPageTitle ($l1, $l2, $l3) {
          $sectionsTitle = array();
-         $sectionsTitle[0] = array("Programmation sur plateformes mobiles <br /> site compagnon",
-                                   "Programmation sur plateformes mobiles <br /> site compagnon",
+         $sectionsTitle[0] = array("'$K_TITLE' <br /> site compagnon",
+                                   "'$K_TITLE'Programmation sur plateformes mobiles'' <br /> site compagnon",
                                    "Cartographie globale du cours");// 1er item = menu, suivants = sous-menus' > $file_part2
 	file_part3="/tmp/part3.$$"
 	echo '      function getPageUrl ($l1, $l2, $l3) {

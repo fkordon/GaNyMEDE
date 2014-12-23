@@ -3,12 +3,10 @@
 echo "######################################################################"
 echo "######################################################################"
 echo "######################################################################"
-echo "             SCRIPT PAS ENCORE ADAPTE!!!"
+echo "             SCRIPT EN COURS d'ADAPTATION!!!"
 echo "######################################################################"
 echo "######################################################################"
 echo "######################################################################"
-
-exit
 
 display_usage() {
 	echo "usage : $0 [-help] [-debug -leger]"
@@ -36,24 +34,36 @@ if [ "$1" = "-leger" ] ; then
 	shift
 fi
 
+source ./Scripts/check_dependencies.sh
+
 # pour créer des archives sans fichiers parasites(sous MacOS)...
 export COPYFILE_DISABLE=true
 
 if [ "$SEE_ALL" ] ; then
 	# indiquer une date de publication anterieure au début réel du MOOC pour
 	# tout voir sur le MOOC-bac-à-sable
-	export K_MOOC_START="2014-03-03T00:01:00Z"
+	export K_MOOC_START="2014-12-01T00:01:00Z"
 fi
+
+######################################################################
+# constantes pour le déployement en local d'une copie du site
+
+baseDir=$(pwd)
+dataDir=ConstructionData
+cartoDir=$dataDir/Cartographie
+syllDir=$dataDir/Syllabus-MOOC
+stdImgDir=$dataDir/StandardImages
 
 ######################################################################
 # constantes pour configurer son MOOC
 
-source configure-mooc.sh
+source $syllDir/configure-mooc.sh
+
 # recuperer le nombre de seances du MOOC (onsuppose ce que sont des numeros
 # que l'on va 'padder' sur deux caracteres (en insérant un 0) pour que
 # l'ordre lexicographique soit aussi l'ordre numerique)
 
-LISTE_SEMAINES=$(grep -a -v ^# ../Cartographie/elements-cours.csv | cut -f 2 | sort -u | sort -n)
+LISTE_SEMAINES=$(grep -a -v ^# $cartoDir/elements-cours.csv | cut -f 2 | sort -u | sort -n)
 ### sort -u | sort -n parce que sort -un ou sort -u -n fait sauter les 0 s'il y en a
 
 ######################################################################
@@ -63,18 +73,16 @@ echo "Dispatching global metadata"
 echo -n "   "
 for semaine in $LISTE_SEMAINES  ; do
 	echo -n "."
-	rm -f ../chapitres/semaine-$(format_number $semaine)/elements-cours.csv
-	liste_elem=$(cut -f 2 ../Cartographie/elements-cours.csv | grep -a -n ^${semaine}$ | cut -d ':' -f 1)
+	rm -f $dataDir/semaine-$(format_number $semaine).csv
+	liste_elem=$(cut -f 2 $cartoDir/elements-cours.csv | grep -a -n ^${semaine}$ | cut -d ':' -f 1)
 	for elem in $liste_elem ; do
-		sed -n ${elem}p ../Cartographie/elements-cours.csv >> ../chapitres/semaine-$(format_number $semaine)/elements-cours.csv
+		sed -n ${elem}p $cartoDir/elements-cours.csv >> $dataDir/semaine-$(format_number $semaine).csv
 	done
 done
-echo
 
 ######################################################################
 # demarrage
-crtdir=$(pwd)
-metadata="$(pwd)/elements-cours.csv"
+
 INDIR="$K_MOOC_ID"
 export TARGET_DIR="$HOME/Desktop/$INDIR"
 
@@ -84,20 +92,27 @@ fi
 
 mkdir "$TARGET_DIR"
 
+
 ######################################################################
 # creation de la structure de base de l'archive
-(cd "$TARGET_DIR"
-mkdir about chapter course discussion html info policies problem sequential static vertical video
+(
+	cd "$TARGET_DIR"
+	mkdir about chapter course discussion html info policies problem sequential static vertical video
 )
 
 ######################################################################
 # insertion des elements "statiques"
-cp ../Syllabus/*.png "$TARGET_DIR/static"
-cp ../Apparence-MOOC/*.jpg  "$TARGET_DIR/static"
+cp $syllDir/*.png $syllDir/*.jpg "$TARGET_DIR/static"
+cp $stdImgDir/*.jpg  "$TARGET_DIR/static"
 
-cp ../Syllabus/syllabus.html "$TARGET_DIR/about/overview.html"
+cp $syllDir/syllabus.html "$TARGET_DIR/about/overview.html"
 echo $K_TEASER_VIDEO_ID > "$TARGET_DIR/about/video.html"
 echo $K_EFFORT > "$TARGET_DIR/about/effort.html"
+
+echo
+echo
+echo "TERMINE POUR L'INSTANT!!!"
+exit
 
 if [ -f ../Informations/doc-pedagogiques.html ] ; then
 	cp ../Informations/doc-pedagogiques.html "$TARGET_DIR/info/handouts.html"
@@ -114,7 +129,7 @@ echo '<course url_name="'$K_MOOC_ID'" org="'$K_INSTITUTION'" course="UPMC-'$K_MO
 
 
 OUTPUT="$TARGET_DIR/course/${K_MOOC_ID}.xml"
-echo '<course course_image="'$K_IMAGE_FOND'" display_name="'$K_TITLE'" end="'$K_MOOC_END'" enrollment_end="'$K_ENROLL_END'" enrollment_start="'$K_ENROLL_START'" start="'$K_MOOC_START'">' > $OUTPUT
+echo '<course course_image="pano_image.jpg" display_name="'$K_TITLE'" end="'$K_MOOC_END'" enrollment_end="'$K_ENROLL_END'" enrollment_start="'$K_ENROLL_START'" start="'$K_MOOC_START'">' > $OUTPUT
 (cd ../chapitres
 for chap in * ; do
 	echo '   <chapter url_name="'$chap'"/>'
