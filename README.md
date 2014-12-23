@@ -43,4 +43,5 @@ english to help people navigate and understand the meaning of the main files in 
 
 PS: all of this was tested under a Mac running MacOS 10.9
 
-PPS: at this stage, perl package Roman is required (http://search.cpan.org/~chorny/Roman-1.22/lib/Roman.pm)
+PPS: at this stage, perl package Roman is required (http://search.cpan.org/~chorny/Roman-1.22/lib/Roman.pm), as well
+as dot, from Graphviz (http://www.graphviz.org)
