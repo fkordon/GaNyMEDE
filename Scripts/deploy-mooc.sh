@@ -102,26 +102,33 @@ mkdir "$TARGET_DIR"
 
 ######################################################################
 # insertion des elements "statiques"
-cp $syllDir/*.png $syllDir/*.jpg "$TARGET_DIR/static"
+if [ "$(ls $syllDir/*.png 2> /dev/null)" ] ; then
+	cp $syllDir/*.png "$TARGET_DIR/static"
+fi
+if [ "$(ls $syllDir/*.jpg 2> /dev/null)" ] ; then
+	cp $syllDir/*.jpg "$TARGET_DIR/static"
+fi
 cp $stdImgDir/*.jpg  "$TARGET_DIR/static"
 
 cp $syllDir/syllabus.html "$TARGET_DIR/about/overview.html"
 echo $K_TEASER_VIDEO_ID > "$TARGET_DIR/about/video.html"
 echo $K_EFFORT > "$TARGET_DIR/about/effort.html"
 
-echo
-echo
-echo "TERMINE POUR L'INSTANT!!!"
-exit
-
-if [ -f ../Informations/doc-pedagogiques.html ] ; then
-	cp ../Informations/doc-pedagogiques.html "$TARGET_DIR/info/handouts.html"
+if [ -f $syllDir/doc-pedagogiques.html ] ; then
+	cp $syllDir/doc-pedagogiques.html "$TARGET_DIR/info/handouts.html"
 fi
 
 ######################################################################
 # Si on veut déployer la cartographie
 
-cp ../Cartographie/cartographie.pdf "$TARGET_DIR/static"
+cp $cartoDir/cartographie.pdf "$TARGET_DIR/static"
+
+
+echo
+echo
+echo "TERMINE POUR L'INSTANT!!!"
+exit
+
 
 ######################################################################
 # la structure du cours (chapitres + informations globales)
