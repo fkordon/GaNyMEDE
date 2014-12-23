@@ -12,7 +12,6 @@ from metadata. Such courses can then be deployed on some home page.
 
 This environment also allows deployment of the courses into the France Université Numérique platform (openedx?).
 
-
 Directory content
 -----------------
 
@@ -25,7 +24,12 @@ Scripts: it contains the scripts used to build
 	- the archive to be deployed on France Université Numérique
 	- and more later? ;-)
 
-Website: the minimum files for the web site (others are generated)
+Website: the minimum files for the web site (others are generated). Basically, you should only change the content of
+content/entree.html that describes the course you want to deploy. The rest is generated automaically from the
+metadata you provide in the ConstructionData directory
+
+MPORTANT: please use only the make command from this directory to generate either the companion web site or the
+archive for your MOOC/distance learning infrastructure. type "make" toget a minimal help.
 
 Usage
 -----
