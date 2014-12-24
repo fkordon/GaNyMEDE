@@ -1,11 +1,5 @@
 #!/bin/bash
 
-echo "######################################################################"
-echo "######################################################################"
-echo "             SCRIPT EN COURS d'ADAPTATION!!!"
-echo "######################################################################"
-echo "######################################################################"
-
 display_usage() {
 	echo "usage : $0 [-help] [-debug -leger]"
 	echo "       -debug : permet de forcer les dates du MOOC avant son commencement"
@@ -101,7 +95,8 @@ mkdir "$TARGET_DIR"
 # creation de la structure de base de l'archive
 (
 	cd "$TARGET_DIR"
-	mkdir about chapter course discussion html info policies problem sequential static vertical video
+	mkdir about chapter course discussion html info policies problem sequential static vertical
+	#mkdir about chapter course discussion html info policies problem sequential static vertical video
 )
 
 ######################################################################
@@ -151,7 +146,7 @@ echo "Generating chapters"
 (cd $dataDir
 vertical_dir="$TARGET_DIR/vertical"
 html_dir="$TARGET_DIR/html"
-video_dir="$TARGET_DIR/video"
+#video_dir="$TARGET_DIR/video"
 problem_dir="$TARGET_DIR/problem"
 discussion_dir="$TARGET_DIR/discussion"
 for chapter in semaine-*.csv ; do
@@ -256,13 +251,14 @@ for chapter in semaine-*.csv ; do
 		# la vidéo (obligatoire)
 		output="$vertical_dir/id-$formatted_chap-$formatted_seq-$seqid-video.xml"
 		echo '<vertical display_name="Vidéo de la séquence">' >> "$output"
-		echo '   <video url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-video-data"/>' >> "$output"
+		echo '   <dmcloud url_name="'$dailymotionid'" display_name="Vidéo de la séquence" allow_download_video="True" id_video="'$dailymotionid'"/>' >> "$output"
+		#		echo '   <video url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-video-data"/>' >> "$output"
 		echo '</vertical>' >> "$output"
 		# générer les fichiers de la vidéo
-		output="$video_dir/id-$formatted_chap-$formatted_seq-$seqid-video-data.xml"
-		echo '<video display_name="Vidéo de la séquence" html5_sources="[&quot;'$dailymotionid'&quot;]" youtube_id_1_0="">' >> "$output"
-		echo '   <source src="'$dailymotionid'"/>' >> "$output"
-		echo '</video>' >> "$output"
+#		output="$video_dir/id-$formatted_chap-$formatted_seq-$seqid-video-data.xml"
+#		echo '<video display_name="Vidéo de la séquence" html5_sources="[&quot;'$dailymotionid'&quot;]" youtube_id_1_0="">' >> "$output"
+#		echo '   <source src="'$dailymotionid'"/>' >> "$output"
+#		echo '</video>' >> "$output"
 		# le QCM (optionnel)
 		# générer les fichiers du QCM si besoin est
 		if [ -f $seqid-QCM.csv ] ; then
