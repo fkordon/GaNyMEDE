@@ -334,12 +334,13 @@ for chapter in semaine-*.csv ; do
 			sequence=$(echo "$LINE" | cut -f 3)
 			formatted_seq="$(format_number $sequence)"
 			typeseq=$(echo "$LINE" | cut -f 5)
+			entityName=$(echo "$LINE" | cut -f 4 | sed -e s'/\\n/ /g' | php -r 'while(($line=fgets(STDIN)) !== FALSE) echo html_entity_decode($line, ENT_QUOTES|ENT_HTML401);')
 			if [ "$typeseq" = "EXERCICE" ] ; then
-				echo '            <choice correct="true">J'"'"'ai réalisé l'"'"'exercice : '$(echo "$LINE" | cut -f 4)'</choice>' >> "$output"
+				echo '            <choice correct="true">J'"'"'ai réalisé l'"'"'exercice : '$entityName'</choice>' >> "$output"
 			else
-				echo '            <choice correct="true">J'"'"'ai regardé la vidéo : '$(echo "$LINE" | cut -f 4 | sed -e s'/\\n/ /g')'</choice>' >> "$output"
+				echo '            <choice correct="true">J'"'"'ai regardé la vidéo : '$entityName'</choice>' >> "$output"
 				if [ -f "$seqid-QCM.csv" ] ; then
-					echo '            <choice correct="true">J'"'"'ai répondu au questionnaire associé à la vidéo : '$(echo "$LINE" | cut -f 4 | sed -e s'/\\n/ /g')'</choice>' >> "$output"
+					echo '            <choice correct="true">J'"'"'ai répondu au questionnaire associé à la vidéo : 'entityName'</choice>' >> "$output"
 				fi
 			fi
 		done)
