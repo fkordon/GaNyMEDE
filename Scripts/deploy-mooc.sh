@@ -76,7 +76,7 @@ echo "preparing quizz data (QCM)"
 echo -n "   "
 SEQ_QCM=$(grep -v \# $cartoDir/qcm.csv | cut -f 1 | sort -u)
 for seq in $SEQ_QCM ; do
-	grep ^$seq $cartoDir/qcm.csv > $dataDir/$seq-QCM.csv
+	grep ^$seq $cartoDir/qcm.csv > $dataDir/$seq-qcm.csv
 	echo -n "."
 done
 echo
@@ -229,7 +229,7 @@ for chapter in semaine-*.csv ; do
 				echo '</ul>' >> "$output"))
 			fi
 		fi
-		if [ -f $seqid-QCM.csv ] ; then
+		if [ -f $seqid-qcm.csv ] ; then
 			echo '   <vertical url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-probleme"/>' >> "$output"
 		fi
 		echo '</sequential>' >> "$output"
@@ -339,7 +339,7 @@ for chapter in semaine-*.csv ; do
 				echo '            <choice correct="true">J'"'"'ai réalisé l'"'"'exercice : '$entityName'</choice>' >> "$output"
 			else
 				echo '            <choice correct="true">J'"'"'ai regardé la vidéo : '$entityName'</choice>' >> "$output"
-				if [ -f "$seqid-QCM.csv" ] ; then
+				if [ -f "$seqid-qcm.csv" ] ; then
 					echo '            <choice correct="true">J'"'"'ai répondu au questionnaire associé à la vidéo : 'entityName'</choice>' >> "$output"
 				fi
 			fi
