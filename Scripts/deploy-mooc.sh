@@ -135,7 +135,8 @@ for chapter in semaine-*.csv ; do
 	#chap=$(echo "$LINE" | cut -f 4 | tr "'\" |&,;#\\?" "_")
 	chap=$(basename $chapter .csv)
 	echo '   <chapter url_name="'$chap'"/>'
-done) >> $OUTPUT
+done
+echo '   <wiki slig="'$K_INSTITUTION'.'$K_ACCRONYM'.'$K_MOOC_ID'"/>') >> $OUTPUT
 echo '</course>' >> $OUTPUT
 
 ######################################################################
