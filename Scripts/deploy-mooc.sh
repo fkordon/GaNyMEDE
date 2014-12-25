@@ -126,7 +126,7 @@ cp $cartoDir/cartographie.pdf "$TARGET_DIR/static"
 
 ######################################################################
 # la structure du cours (chapitres + informations globales)
-echo '<course url_name="'$K_MOOC_ID'" org="'$K_INSTITUTION'" course="UPMC-'$K_MOOC_ID'"/>' > "$TARGET_DIR/course.xml"
+echo '<course url_name="'$K_MOOC_ID'" org="'$K_INSTITUTION'" course="'$K_ACCRONYM'"/>' > "$TARGET_DIR/course.xml"
 
 OUTPUT="$TARGET_DIR/course/${K_MOOC_ID}.xml"
 echo '<course course_image="pano_image.jpg" display_name="'$K_TITLE'" end="'$K_MOOC_END'" enrollment_end="'$K_ENROLL_END'" enrollment_start="'$K_ENROLL_START'" start="'$K_MOOC_START'">' > $OUTPUT
