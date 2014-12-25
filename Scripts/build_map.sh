@@ -3,6 +3,8 @@
 baseDir=$(pwd)
 cartoDir=$baseDir/ConstructionData/Cartographie
 
+source ./Scripts/check_dependencies.sh
+
 do_the_work () {
 	if [ $# -eq 1 ] ; then
 		# get smallest week number
