@@ -72,6 +72,14 @@ for semaine in $LISTE_SEMAINES  ; do
 	done
 done
 echo
+echo "preparing quizz data (QCM)"
+echo -n "   "
+SEQ_QCM=$(grep -v \# $cartoDir/qcm.csv | cut -f 1 | sort -u)
+for seq in $SEQ_QCM ; do
+	grep ^$seq $cartoDir/qcm.csv > $dataDir/$seq-QCM.csv
+	echo -n "."
+done
+echo
 
 ######################################################################
 # demarrage
@@ -253,30 +261,24 @@ for chapter in semaine-*.csv ; do
 		output="$vertical_dir/id-$formatted_chap-$formatted_seq-$seqid-video.xml"
 		echo '<vertical display_name="Vidéo de la séquence">' >> "$output"
 		echo '   <dmcloud url_name="'$dailymotionid'" display_name="Vidéo de la séquence" allow_download_video="True" id_video="'$dailymotionid'"/>' >> "$output"
-		#		echo '   <video url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-video-data"/>' >> "$output"
 		echo '</vertical>' >> "$output"
-		# générer les fichiers de la vidéo
-#		output="$video_dir/id-$formatted_chap-$formatted_seq-$seqid-video-data.xml"
-#		echo '<video display_name="Vidéo de la séquence" html5_sources="[&quot;'$dailymotionid'&quot;]" youtube_id_1_0="">' >> "$output"
-#		echo '   <source src="'$dailymotionid'"/>' >> "$output"
-#		echo '</video>' >> "$output"
 		# le QCM (optionnel)
 		# générer les fichiers du QCM si besoin est
-		if [ -f $seqid-QCM.csv ] ; then
+		if [ -f $seqid-qcm.csv ] ; then
 			output="$vertical_dir/id-$formatted_chap-$formatted_seq-$seqid-probleme.xml"
 			echo '<vertical display_name="Questionnaire de la séquence '$sequence' (cours '$numchap')">' >> "$output"
 			echo '   <problem url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-probleme-data"/>' >> "$output"
 			echo '</vertical>' >> "$output"
 			output="$problem_dir/id-$formatted_chap-$formatted_seq-$seqid-probleme-data.xml"
 			echo '<problem display_name="Questionnaire de la séquence '$sequence' (cours '$numchap')" markdown="null">' >> "$output"
-			grep -a -v ^# $seqid-QCM.csv | sort -n | while read QCMLINE ; do
+			grep -a -v ^# $seqid-qcm.csv | sort -n | while read QCMLINE ; do
 				numq=$(echo "$QCMLINE" | cut -f 4)
 				textq=$(echo "$QCMLINE" | cut -f 5)
 				typeq=$(echo "$QCMLINE" | cut -f 6)
 				for i in 1 2 3 4 5 6 7 8 9 10 ; do
 					repoq[$i]=$(echo "$QCMLINE" | cut -f $(expr $i + 6))
 				done
-				explq=$(echo "$QCMLINE" | cut -f 14)
+				explq=$(echo "$QCMLINE" | cut -f 17)
 				echo '   <p>'$textq'</p>' >> "$output"
 				if [ "$typeq" = "1R" ] ; then
 					# 1 choix parmi R réponses
@@ -324,7 +326,7 @@ for chapter in semaine-*.csv ; do
 	echo '</sequential>' >> "$output"
 	output="$problem_dir/semaine-"$formatted_chap"-bilan-data.xml"
 	echo '<problem display_name="Bilan de la semaine '$numchap'" markdown="null">' >> "$output"
-	echo '   <p>Cochez les actions que vous avez réalisées cette semaine afin de faire un bilan et vous assurer de n'"'"'avoir rien oublié.</p>' >> "$output"
+	echo '   <p>Cochez les actions que vous avez effectuées cette semaine afin de faire un bilan et vous assurer de n'"'"'avoir rien oublié.</p>' >> "$output"
 	echo '      <choiceresponse>' >> "$output"
 	echo '         <checkboxgroup type="MultipleChoice">' >> "$output"
 	grep -a -v ^# $chapter| grep -a -v FIN | grep -a -v DEB | \
@@ -333,11 +335,11 @@ for chapter in semaine-*.csv ; do
 			formatted_seq="$(format_number $sequence)"
 			typeseq=$(echo "$LINE" | cut -f 5)
 			if [ "$typeseq" = "EXERCICE" ] ; then
-				echo '            <choice correct="true">J'"'"'ai réalisé l'"'"'exercice '$(echo "$LINE" | cut -f 4)'</choice>' >> "$output"
+				echo '            <choice correct="true">J'"'"'ai réalisé l'"'"'exercice : '$(echo "$LINE" | cut -f 4)'</choice>' >> "$output"
 			else
-				echo '            <choice correct="true">J'"'"'ai regardé la vidéo «'$(echo "$LINE" | cut -f 4 | sed -e s'/\\n/ /g')'»</choice>' >> "$output"
+				echo '            <choice correct="true">J'"'"'ai regardé la vidéo : '$(echo "$LINE" | cut -f 4 | sed -e s'/\\n/ /g')'</choice>' >> "$output"
 				if [ -f "$seqid-QCM.csv" ] ; then
-					echo '            <choice correct="true">J'"'"'ai répondu au questionnaire associé à la vidéo «'$(echo "$LINE" | cut -f 4 | sed -e s'/\\n/ /g')'»</choice>' >> "$output"
+					echo '            <choice correct="true">J'"'"'ai répondu au questionnaire associé à la vidéo : '$(echo "$LINE" | cut -f 4 | sed -e s'/\\n/ /g')'</choice>' >> "$output"
 				fi
 			fi
 		done)
