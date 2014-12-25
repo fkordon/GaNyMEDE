@@ -61,10 +61,10 @@ mooc:
 
 clean:
 	@make present WHAT="Nettoyage des fichiers générés"
-	rm -f $(CARTO_DIR)/carto*.dot
-	rm -f $(CARTO_DIR)/*.pdf
 	rm -f $(DATA_DIR)/semaine-*.csv
 	rm -f $(DATA_DIR)/*-qcm.csv
+	rm -f $(CARTO_DIR)/carto*.dot
+	rm -f $(CARTO_DIR)/*.pdf
 	rm -f $(LOCAL_WEB_SITE)/data/*
 	rm -f $(LOCAL_WEB_SITE)/svg/*
 	rm -f $(LOCAL_WEB_SITE)/content/semaine-*.html
