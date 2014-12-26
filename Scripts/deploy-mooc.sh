@@ -118,6 +118,7 @@ if [ "$(ls $syllDir/*.jpg 2> /dev/null)" ] ; then
 fi
 cp $stdImgDir/*.jpg  "$TARGET_DIR/static"
 cp $webDir/images/seq-*50.png "$TARGET_DIR/static"
+cp $stdImgDir/GaNyMEDE.css "$TARGET_DIR/static"
 
 cp $syllDir/syllabus.html "$TARGET_DIR/about/overview.html"
 echo $K_TEASER_VIDEO_ID > "$TARGET_DIR/about/video.html"
@@ -246,31 +247,35 @@ for chapter in semaine-*.csv ; do
 		echo '<html display_name="Résumé de la séquence '$sequence' (cours '$numchap')" filename="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-resume-data"/>' >> "$html_dir/id-$formatted_chap-$formatted_seq-$seqid-resume-data.xml"
 		output="$html_dir/id-$formatted_chap-$formatted_seq-$seqid-resume-data.html"
 		case $seqtype in
-			"BASE") color="#ff3300" 
+			"BASE") style="basecolor" 
 				visuelSeq="base";;
-			"OPTIONNEL") color="#339900" 
+			"OPTIONNEL") style="opticolor"
 				visuelSeq="opt";;
-			"DEMONSTRATION") color="#cc00cc" 
+			"DEMONSTRATION") style="democolor"
 				visuelSeq="demo";;
-			"ILLUSTRATION") color="#3300cc" 
+			"ILLUSTRATION") style="illucolor"
 				visuelSeq="example";;
-			"EXERCICE") color="#ff9900" 
+			"EXERCICE") style="exercolor"
 				visuelSeq="exo";;
 		esac
+		echo '<link rel="stylesheet" type="text/css" href="/static/GaNyMEDE.css" />' > "$output"
 		if [ "$seqtype" = "OPTIONNEL" ] ; then
-			echo '<p>Vous pouvez sauter cette séquence si vous avez les prérequis suivants: '$(echo "$LINE" | cut -f 9)'.</p>' > "$output"
-			echo '<h2><img src="/static/seq-'$visuelSeq'x50.png"> <span style="color:'$color'">Résumé de la séquence</span></h2>' >> "$output"
-		else
-			echo '<h2><img src="/static/seq-'$visuelSeq'x50.png"> <span style="color:"'$color'">Résumé de la séquence</span></h2></h2>' > "$output"
-			
+			if [ "$(echo "$LINE" | cut -f 9)" ] ; then
+				echo '<p>Vous pouvez sauter cette séquence si vous avez les prérequis suivants: '$(echo "$LINE" | cut -f 9)'.</p>' >> "$output"
+			else
+				echo
+				echo "Warning, there is a missing prerequisise definition in $seqid (course $formatted_chap, sequence $formatted_seq)"
+				echo -n "   "
+			fi
 		fi
+		echo '<h2><img src="/static/seq-'$visuelSeq'x50.png"><span class="'$style'"> Résumé de la séquence</span></h2>' >> "$output"
 		cat $seqid-resume.html >> "$output"
 		if [ "$motsclef" ] ; then
-			echo '<h2>Mots clefs</h2>' >> "$output"
+			echo '<h2><span class="'$style'">Mots clefs</span></h2>' >> "$output"
 			echo "<p>$motsclef.</p>" >> "$output"
 		fi
 		if [ -f "$seqid-slides.pdf" ] ; then
-			echo '<h2>Transparents (pdf)</h2>' >> "$output"
+			echo '<h2><span class="'$style'">Transparents (pdf)</span></h2>' >> "$output"
 			if [ "$NO_PDF" ] ; then
 				echo '<p>Mode "léger" activé => les éléments "lourds" du MOOC ne sont pas déployées (supprimez le paramètre "-leger" dans la ligne de commande de deploy_mooc.sh).</p>' >> "$output"
 			else
