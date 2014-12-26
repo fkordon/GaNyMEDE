@@ -246,17 +246,22 @@ for chapter in semaine-*.csv ; do
 		echo '<html display_name="Résumé de la séquence '$sequence' (cours '$numchap')" filename="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-resume-data"/>' >> "$html_dir/id-$formatted_chap-$formatted_seq-$seqid-resume-data.xml"
 		output="$html_dir/id-$formatted_chap-$formatted_seq-$seqid-resume-data.html"
 		case $seqtype in
-			"BASE") visuelSeq="base";;
-			"OPTIONNEL") visuelSeq="opt";;
-			"DEMONSTRATION") visuelSeq="demo";;
-			"ILLUSTRATION") visuelSeq="example";;
-			"EXERCICE") visuelSeq="exo";;
+			"BASE") color="#ff3300" 
+				visuelSeq="base";;
+			"OPTIONNEL") color="#339900" 
+				visuelSeq="opt";;
+			"DEMONSTRATION") color="#cc00cc" 
+				visuelSeq="demo";;
+			"ILLUSTRATION") color="#3300cc" 
+				visuelSeq="example";;
+			"EXERCICE") color="#ff9900" 
+				visuelSeq="exo";;
 		esac
 		if [ "$seqtype" = "OPTIONNEL" ] ; then
 			echo '<p>Vous pouvez sauter cette séquence si vous avez les prérequis suivants: '$(echo "$LINE" | cut -f 9)'.</p>' > "$output"
-			echo '<h2><img src="/static/seq-'$visuelSeq'x50.png"> Résumé de la séquence</h2>' >> "$output"
+			echo '<h2><img src="/static/seq-'$visuelSeq'x50.png"> <span style="color:'$color'">Résumé de la séquence</span></h2>' >> "$output"
 		else
-			echo '<h2><img src="/static/seq-'$visuelSeq'x50.png"> Résumé de la séquence</h2>' > "$output"
+			echo '<h2><img src="/static/seq-'$visuelSeq'x50.png"> <span style="color:"'$color'">Résumé de la séquence</span></h2></h2>' > "$output"
 			
 		fi
 		cat $seqid-resume.html >> "$output"
