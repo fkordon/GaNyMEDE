@@ -45,6 +45,7 @@ dataDir=ConstructionData
 cartoDir=$dataDir/Cartographie
 syllDir=$dataDir/Syllabus-MOOC
 stdImgDir=$dataDir/StandardImages
+webDir=WebSite
 
 ######################################################################
 # constantes pour configurer son MOOC
@@ -116,6 +117,7 @@ if [ "$(ls $syllDir/*.jpg 2> /dev/null)" ] ; then
 	cp $syllDir/*.jpg "$TARGET_DIR/static"
 fi
 cp $stdImgDir/*.jpg  "$TARGET_DIR/static"
+cp $webDir/images/seq-*50.png "$TARGET_DIR/static"
 
 cp $syllDir/syllabus.html "$TARGET_DIR/about/overview.html"
 echo $K_TEASER_VIDEO_ID > "$TARGET_DIR/about/video.html"
@@ -179,6 +181,7 @@ for chapter in semaine-*.csv ; do
 		seqid=$(echo "$LINE" | cut -f 1)
 		sequence=$(echo "$LINE" | cut -f 3)
 		starting=$(echo "$LINE" | cut -f 12)
+		seqtype=$(echo "$LINE" | cut -f 5)
 		if [ "$SEE_ALL" ] ; then
 			# indiquer une date de publication anterieure au début réel du MOOC
 			# pour tout voir sur le MOOC-bac-à-sable
@@ -242,7 +245,20 @@ for chapter in semaine-*.csv ; do
 		# générer les fichiers du résumé
 		echo '<html display_name="Résumé de la séquence '$sequence' (cours '$numchap')" filename="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-resume-data"/>' >> "$html_dir/id-$formatted_chap-$formatted_seq-$seqid-resume-data.xml"
 		output="$html_dir/id-$formatted_chap-$formatted_seq-$seqid-resume-data.html"
-		echo '<h2>Résumé de la séquence</h2>' > "$output"
+		case $seqtype in
+			"BASE") visuelSeq="base";;
+			"OPTIONNEL") visuelSeq="opt";;
+			"DEMONSTRATION") visuelSeq="demo";;
+			"ILLUSTRATION") visuelSeq="example";;
+			"EXERCICE") visuelSeq="exo";;
+		esac
+		if [ "$seqtype" = "OPTIONNEL" ] ; then
+			echo '<p>Vous pouvez sauter cette séquence si vous avez les prérequis suivants: '$(echo "$LINE" | cut -f 9)'.</p>' > "$output"
+			echo '<h2><img src="/static/seq-'$visuelSeq'x50.png"> Résumé de la séquence</h2>' >> "$output"
+		else
+			echo '<h2><img src="/static/seq-'$visuelSeq'x50.png"> Résumé de la séquence</h2>' > "$output"
+			
+		fi
 		cat $seqid-resume.html >> "$output"
 		if [ "$motsclef" ] ; then
 			echo '<h2>Mots clefs</h2>' >> "$output"
@@ -292,10 +308,10 @@ for chapter in semaine-*.csv ; do
 				for i in 1 2 3 4 5 6 7 8 9 10 ; do
 					if [ "${repoq[$i]}" ] ; then
 						if [ "_" != "$(echo ${repoq[$i]} | cut -b1)" ] ; then
-							# ce n'est pas une réponse (pas de _ au début)
+							# ce n'est pas une donne réponse (pas de _ au début)
 							echo '            <choice correct="false">'"${repoq[$i]}"'</choice>' >> "$output"
 						else
-							# c'est une réponse
+							# c'est une donne réponse
 							echo '            <choice correct="true">'"$(echo ${repoq[$i]} | cut -d '_' -f 2)"'</choice>' >> "$output"
 						fi
 					fi
