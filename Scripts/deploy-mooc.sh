@@ -75,11 +75,15 @@ done
 echo
 echo "preparing quizz data (QCM)"
 echo -n "   "
-SEQ_QCM=$(grep -v \# $cartoDir/qcm.csv | cut -f 1 | sort -u)
-for seq in $SEQ_QCM ; do
-	grep ^$seq $cartoDir/qcm.csv > $dataDir/$seq-qcm.csv
-	echo -n "."
-done
+if [ -f "$cartoDir/qcm.csv" ] ; then
+	SEQ_QCM=$(grep -v \# $cartoDir/qcm.csv | cut -f 1 | sort -u)
+	for seq in $SEQ_QCM ; do
+		grep ^$seq $cartoDir/qcm.csv > $dataDir/$seq-qcm.csv
+		echo -n "."
+	done
+else
+	echo -n "WARNING: no quizz found... is that normal?"
+fi
 echo
 
 ######################################################################
@@ -127,7 +131,9 @@ echo $K_EFFORT > "$TARGET_DIR/about/effort.html"
 if [ -f $syllDir/doc-pedagogiques.html ] ; then
 	cp $syllDir/doc-pedagogiques.html "$TARGET_DIR/info/handouts.html"
 else
-	echo "Warning: no pedagogical information (file $syllDir/doc-pedagogiques.html)"
+	echo
+	echo "   WARNING: no pedagogical information (file $syllDir/doc-pedagogiques.html)"
+	echo
 fi
 
 ######################################################################
