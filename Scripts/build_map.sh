@@ -3,7 +3,11 @@
 baseDir=$(pwd)
 cartoDir=$baseDir/ConstructionData/Cartographie
 
-source ./Scripts/check_dependencies.sh
+# Il est possible de paramétrer le fichier de prologue via une variable d'environnement
+# (pratique lorsque l'on a plusieurs MOOCs issus du même cours)
+if [ -z "$PROLOGUE_FILE" ] ; then
+	PROLOGUE_FILE="contraintes.dot"
+fi
 
 do_the_work () {
 	if [ $# -eq 1 ] ; then
