@@ -174,7 +174,7 @@ for chapter in semaine-*.csv ; do
 	formatted_chap="$(format_number $numchap)"
 	num=$(cut -f 3 $chapter | grep -a -n ^0$ | cut -d ':' -f 1)
 	# le titre du chapitre
-	chaptitle=$(format_number $numchap)' : '$(sed -n ${num}p $chapter| cut -f 4 | sed -e s'/\\\\n/ /g' | php -r 'while(($line=fgets(STDIN)) !== FALSE) echo html_entity_decode($line, ENT_QUOTES|ENT_HTML401);')
+	chaptitle=$(format_number $numchap)' : '$(sed -n ${num}p $chapter| cut -f 4 | sed -e 's/\\\\n/ /g' | php -r 'while(($line=fgets(STDIN)) !== FALSE) echo html_entity_decode($line, ENT_QUOTES|ENT_HTML401);' | sed -e 's/&/et/g')
 	starting=$(sed -n ${num}p $chapter | cut -f 12)
 	if [ "$SEE_ALL" -o "$starting" = "" ] ; then
 		# indiquer une date de publication anterieure au début réel du MOOC pour
@@ -201,7 +201,7 @@ for chapter in semaine-*.csv ; do
 		echo '   <sequential url_name="semaine-'$formatted_chap'-rubrique-'$formatted_seq'-'$seqid'"/>' >> "$TARGET_DIR/chapter/$chap.xml"
 		# construction de la rubrique
 		output="$TARGET_DIR/sequential/semaine-$formatted_chap-rubrique-$formatted_seq-$seqid.xml"
-		echo '<sequential display_name="'$(echo "$LINE" | cut -f 4 | sed -e s'/\\n/ /g' | php -r 'while(($line=fgets(STDIN)) !== FALSE) echo html_entity_decode($line, ENT_QUOTES|ENT_HTML401);')'" start="'$starting'">' >> "$output"
+		echo '<sequential display_name="'$(echo "$LINE" | cut -f 4 | sed -e 's/\\n/ /g' | php -r 'while(($line=fgets(STDIN)) !== FALSE) echo html_entity_decode($line, ENT_QUOTES|ENT_HTML401);' | sed -e 's/&/et/g')'" start="'$starting'">' >> "$output"
 		# il y a au moins un résumé et une vidéo
 		echo '   <vertical url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-resume"/>' >> "$output"
 		echo '   <vertical url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-video"/>' >> "$output"
@@ -366,7 +366,7 @@ for chapter in semaine-*.csv ; do
 			sequence=$(echo "$LINE" | cut -f 3)
 			formatted_seq="$(format_number $sequence)"
 			typeseq=$(echo "$LINE" | cut -f 5)
-			entityName=$(echo "$LINE" | cut -f 4 | sed -e s'/\\n/ /g' | php -r 'while(($line=fgets(STDIN)) !== FALSE) echo html_entity_decode($line, ENT_QUOTES|ENT_HTML401);')
+			entityName=$(echo "$LINE" | cut -f 4 | sed -e 's/\\n/ /g' | php -r 'while(($line=fgets(STDIN)) !== FALSE) echo html_entity_decode($line, ENT_QUOTES|ENT_HTML401);' | sed -e 's/&/et/g')
 			if [ "$typeseq" = "EXERCICE" ] ; then
 				echo '            <choice correct="true">J'"'"'ai réalisé l'"'"'exercice : '$entityName'</choice>' >> "$output"
 			else
