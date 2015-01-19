@@ -158,7 +158,7 @@ echo '</course>' >> $OUTPUT
 
 ######################################################################
 # les chapitres (puis à l'intérieur les rubriques et encore à l'interieur
-# les sous-rubriques 
+# les sous-rubriques)
 
 echo "Generating chapters"
 (cd $dataDir
