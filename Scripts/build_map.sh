@@ -7,17 +7,16 @@ cartoDir=$baseDir/ConstructionData/Cartographie
 # (pratique lorsque l'on a plusieurs MOOCs issus du même cours)
 
 do_the_work () {
-	if [ -z "$PROLOGUE_FILE" ] ; then
-		PROLOGUE_FILE="contraintes.dot"
+	if [ -z "$CONSTRAINTS_FILE" ] ; then
+		CONSTRAINTS_FILE="contraintes.dot"
 	fi
 
 	if [ $# -eq 1 ] ; then
-		# get smallest week number
 		NUM_SEMAINE=$1
-		sed -n $(cat $cartoDir/elements-cours.csv | tr '\t' '@' | cut -d @ -f 2 | grep -n ^$NUM_SEMAINE | cut -d : -f 1 | sed -e 's/$/p/' | tr '\n' ';' ;) $cartoDir/elements-cours.csv | grep -v \# | tr '\t' '@' > /tmp/selected_data.$$
+		sed -n $(cat $cartoDir/elements-cours.csv | tr '\t' '@' | cut -d @ -f 2 | grep -n ^${NUM_SEMAINE}$ | cut -d : -f 1 | sed -e 's/$/p/' | tr '\n' ';' ;) $cartoDir/elements-cours.csv | grep -v \# | tr '\t' '@' > /tmp/selected_data.$$
 		Target="$cartoDir/cartographie-"$(perl -e 'printf "%0.2d", '$1).dot
 		cat $cartoDir/prologue.dot > $Target
-		grep sem_${NUM_SEMAINE}_ $cartoDir/$PROLOGUE_FILE >> $Target
+		grep sem_${NUM_SEMAINE}_ $cartoDir/$CONSTRAINTS_FILE >> $Target
 	else
 		# get smallest week number
 		NUM_SEMAINE=$(grep -v ^$ $cartoDir/elements-cours.csv | grep -v '#' | cut -f 2 | sort -u | sort -n | head -1)
@@ -25,7 +24,7 @@ do_the_work () {
 		cat $cartoDir/elements-cours.csv | tr '\t' '@' | grep -v "^#" | grep -v '^$' > /tmp/selected_data.$$
 		Target="$cartoDir/cartographie.dot"
 		globalSeqNumber=1
-		cat $cartoDir/prologue.dot $cartoDir/$PROLOGUE_FILE > $Target
+		cat $cartoDir/prologue.dot $cartoDir/$CONSTRAINTS_FILE > $Target
 	fi
 
 	echo > $cartoDir/tmp_nodes
