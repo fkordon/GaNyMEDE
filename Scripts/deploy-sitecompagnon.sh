@@ -157,22 +157,22 @@ cat /tmp/part0.$$ | (output="$webfunctionDir/functions.php"
 	echo '      function getMenuTitle ($l1, $l2, $l3) {
          $menuTitle = array();
          $menuTitle[0] = array("Accueil",
-                               "Page d&#x27;accueil",
+                               "Nouvelles",
                                "Cartographie");// 1er item = menu, suivants = sous-menus' > $file_part1
 	file_part2="/tmp/part2.$$"
 	echo '      function getPageTitle ($l1, $l2, $l3) {
          $sectionsTitle = array();
          $sectionsTitle[0] = array("'$K_TITLE' <br /> site compagnon",
-                                   "'$K_TITLE' <br /> site compagnon",
+                                   "'$K_TITLE' - les news",
                                    "Cartographie globale du cours");// 1er item = menu, suivants = sous-menus' > $file_part2
 	file_part3="/tmp/part3.$$"
 	echo '      function getPageUrl ($l1, $l2, $l3) {
          $sectionsURL = array();
-         $sectionsURL[0] = array("index.php", "index.php", "cartographie.php");// 1er item = menu, suivants = sous-menus' > $file_part3
+         $sectionsURL[0] = array("index.php", "news.php", "cartographie.php");// 1er item = menu, suivants = sous-menus' > $file_part3
 	file_part4="/tmp/part4.$$"
 	echo '      function getPageContentUrl ($l1, $l2, $l3) {
          $sectionsContentURL = array();
-         $sectionsContentURL[0] = array("entree.html", "entree.html", "cartographie.html");// 1er item = menu, suivants = sous-menus' > $file_part4
+         $sectionsContentURL[0] = array("entree.html", "news.html", "cartographie.html");// 1er item = menu, suivants = sous-menus' > $file_part4
 	echo '<?php
    $MAX_MENU_L1 = '$NUMSEM';  //profondeur maximum de niveau 1
    $MAX_MENU_L2 = array (); // profondeur maximum de niveau 2

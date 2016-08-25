@@ -1,7 +1,7 @@
 GaNyMEDE
 ========
 
-GeNeric Moocs  &amp; coursEs Development Environment
+GeNeric Moocs &amp; coursEs Development Environment
 
 
 Description

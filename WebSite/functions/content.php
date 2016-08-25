@@ -31,7 +31,7 @@
 		echo '<div class="background-others"><img src="images/fond-site-autres.jpg" alt="fond" /></div>';
 		echo '<div class="logoSAR"><img src="images/logo-rotate.gif" alt="logo cours" /></div>';
 	} else {
-		if ($level1 == 0 && $level2 < 2) {
+		if ($level1 == 0 && $level2 < 1) {
 			echo '<div class="background-main"><img src="images/fond-site-main.jpg" alt="fond" /></div>';
 			echo '<div class="logoUPMC"><img src="images/logo-UPMC.png" alt="logo UPMC" /></div>';
 			echo '<div class="QRcode"><img src="images/qr-codex100.png" alt="QR code" /></div>';
