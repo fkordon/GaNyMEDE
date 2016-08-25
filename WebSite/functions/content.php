@@ -152,7 +152,7 @@
 			include ("functions/date.php");
 			echo '</div><p>&nbsp;</p></div>';
 		} else {
-			if ($level1 > 0 || $level2 == 2) {
+			if ($level1 > 0 || $level2 > 0) {
 				echo '<div class="content">'."\n";
 				if ($DEEPPAGEFLOAT != '') {
 					echo '<div class="enveloppeTdM"><div class="TdM">'."\n";
