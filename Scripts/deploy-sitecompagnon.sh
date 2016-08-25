@@ -163,7 +163,7 @@ cat /tmp/part0.$$ | (output="$webfunctionDir/functions.php"
 	echo '      function getPageTitle ($l1, $l2, $l3) {
          $sectionsTitle = array();
          $sectionsTitle[0] = array("'$K_TITLE' <br /> site compagnon",
-                                   "'$K_TITLE'Programmation sur plateformes mobiles'' <br /> site compagnon",
+                                   "'$K_TITLE' <br /> site compagnon",
                                    "Cartographie globale du cours");// 1er item = menu, suivants = sous-menus' > $file_part2
 	file_part3="/tmp/part3.$$"
 	echo '      function getPageUrl ($l1, $l2, $l3) {
