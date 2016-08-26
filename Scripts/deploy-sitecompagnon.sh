@@ -87,13 +87,13 @@ for semaine in $LISTE_SEMAINES  ; do
 		sed -n ${elem}p $cartoDir/elements-cours.csv >> $dataDir/semaine-$formatted_semaine.csv
 	done
 	# generation de la page principale de la semaine sur le site compagnon...
-	if [ ! -f $dataDir/resume-$formatted_semaine.html ] ; then
+	if [ ! -f $dataDir/resumes/resume-$formatted_semaine.html ] ; then
 		echo
 		echo "Le résumé $dataDir/resume-$formatted_semaine.html n'existe pas"
 		exit 1
 	fi
 	echo '<h1>R&eacute;sum&eacute; de la semaine</h1>' > $webcontentDir/semaine-$formatted_semaine.html
-	cat $dataDir/resume-$formatted_semaine.html >> $webcontentDir/semaine-$formatted_semaine.html
+	cat $dataDir/resumes/resume-$formatted_semaine.html >> $webcontentDir/semaine-$formatted_semaine.html
 	liste_exo=$(cut -f 5 $dataDir/semaine-$formatted_semaine.csv | grep -a -n ^EXERCICE$ | cut -d ':' -f 1)
 	if [ "$liste_exo" ] ; then
 		echo '<h1>Mise en pratique des connaissances</h1>' >>  $webcontentDir/semaine-$formatted_semaine.html
@@ -264,12 +264,12 @@ for numchap in $LISTE_SEMAINES ; do
 		romancounter=$(perl  -e 'use Roman ; print uc roman('$globalSeqNumber')')
 		echo '<span class="num-titre">'$romancounter' -</span> '$titre > $webDataDir/c$formatted_chap-s$formatted_seq-titre.html
 		echo '<div class="TdMl2"><a href="index.php?C='$formatted_chap'&amp;S='$formatted_seq'">'$romancounter' - '$titre'</a></div>' >> $webTdmDir/semaine-$formatted_chap.html
-		if [ ! -f $dataDir/$uniqueid-resume.html ] ; then
+		if [ ! -f $dataDir/resumes/$uniqueid-resume.html ] ; then
 			echo
 			echo "ERREUR - résumé de la séquence $formatted_seq ($uniqueid) manquant!!!"
 			exit 1
 		fi
-		cat $dataDir/$uniqueid-resume.html >> $webDataDir/c$formatted_chap-s$formatted_seq-resume.html
+		cat $dataDir/resumes/$uniqueid-resume.html >> $webDataDir/c$formatted_chap-s$formatted_seq-resume.html
 		if [ "$motsclef" ] ; then
 			echo "<p><em>Mots clefs :</em> $motsclef.</p>" >> $webDataDir/c$formatted_chap-s$formatted_seq-resume.html
 		fi
@@ -312,8 +312,8 @@ for numchap in $LISTE_SEMAINES ; do
 				echo '<div class="TdMl1">Pr&eacute;sentation d&#x27;un exercice</div>' > $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;
 				echo '<div class="TdMimage"><img src="images/seq-exox50.png" alt="logo-seq-exercice" /></div>' >> $webDataDir/c$formatted_chap-s$formatted_seq-class.html ;;
 		esac
-		if [ -f $dataDir/$uniqueid-slides.pdf ] ; then
-			cp $dataDir/$uniqueid-slides.pdf $webPdfDir/c$formatted_chap-s$formatted_seq-slides.pdf
+		if [ -f $dataDir/slides/$uniqueid-slides.pdf ] ; then
+			cp $dataDir/slides/$uniqueid-slides.pdf $webPdfDir/c$formatted_chap-s$formatted_seq-slides.pdf
 			echo '<br />'>> $webDataDir/c$formatted_chap-s$formatted_seq-class.html
 			echo '<div class="TdMURLslides"><b>T&eacute;l&eacute;chargement</b></div>' >> $webDataDir/c$formatted_chap-s$formatted_seq-class.html
 			echo '<div class="TdMl3"><a href="'$URLvideo'">Vid&eacute;o du cours</a></div>' >> $webDataDir/c$formatted_chap-s$formatted_seq-class.html
@@ -325,12 +325,12 @@ for numchap in $LISTE_SEMAINES ; do
 			echo '<div class="TdMl3">pas de pdf des slides</a></div>' >> $webDataDir/c$formatted_chap-s$formatted_seq-class.html
 		fi
 		# les autres informations en plus des liens etc...
-		if [ -f $dataDir/$uniqueid-autres.html ] ; then
-			cp $dataDir/$uniqueid-autres.html $webDataDir/c$formatted_chap-s$formatted_seq-autres.html
+		if [ -f $dataDir/others/$uniqueid-autres.html ] ; then
+			cp $dataDir/others/$uniqueid-autres.html $webDataDir/c$formatted_chap-s$formatted_seq-autres.html
 		fi
 		# les extras dans le cartouche le cas échéant
-		if [ -f $dataDir/$uniqueid-extras.csv ] ; then
-			grep -a -v '^###' $dataDir/$uniqueid-extras.csv | sort -n | (crtRubrique=""
+		if [ -f $dataDir/extra/$uniqueid-extras.csv ] ; then
+			grep -a -v '^###' $dataDir/extra/$uniqueid-extras.csv | sort -n | (crtRubrique=""
 			while read LINE ; do
 				rubrique=$(echo $LINE | cut -d ',' -f 3)
 				texte=$(echo $LINE | cut -d ',' -f 4)
@@ -343,8 +343,8 @@ for numchap in $LISTE_SEMAINES ; do
 			done)
 		fi
 		# des liens associés le cas échéant
-		if [ -f "$dataDir/$uniqueid-liens.html" ] ; then
-			cp $dataDir/$uniqueid-liens.html $webDataDir/c$formatted_chap-s$formatted_seq-liens.html
+		if [ -f "$dataDir/links/$uniqueid-liens.html" ] ; then
+			cp $dataDir/links/$uniqueid-liens.html $webDataDir/c$formatted_chap-s$formatted_seq-liens.html
 		fi
 		echo $(expr $globalSeqNumber + 1) > /tmp/globalseq
 	done
