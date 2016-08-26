@@ -3,7 +3,6 @@ GaNyMEDE
 
 GeNeric Moocs &amp; coursEs Development Environment
 
-
 Description
 -----------
 
@@ -16,7 +15,8 @@ Directory content
 -----------------
 
 ConstructionData: it contains the metadata for your course. At this stage, it contains a small
-example
+example. All the configuration files are structured in subdirectories, so please have a look
+to the local readme.txt file.
 
 Scripts: it contains the scripts used to build
 	- the map of the course
