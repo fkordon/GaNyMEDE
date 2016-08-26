@@ -15,4 +15,7 @@ to tag files. You have the following type of files:
 - <ident>-extras.csv : it contains in a CSV format, some extra document (typically, archives and stuff) that could be
   useful in the context of the sequence.
 
+Be careful because, to operate the Makefile in the main directory, you might want to set-up constants in the file
+Syllabus-MOOC/configure-mooc.sh (name of the course and all the stuff for the MOOC too).
+
 
