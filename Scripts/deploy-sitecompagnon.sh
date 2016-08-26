@@ -278,6 +278,7 @@ for numchap in $LISTE_SEMAINES ; do
 			echo "ERREUR - URL de la vidéo de la séquence $formatted_seq ($uniqueid) manquant!!!"
 			exit 1
 		fi
+		# To be used if you handle identifiers from Dailymotion
  		echo '<p>Si la s&eacute;quence ne s&#x27;affiche pas dans le cadre ci-dessous, vous
  devez la t&eacute;l&eacute;charger depuis le cartouche.</p>
 
@@ -286,6 +287,11 @@ for numchap in $LISTE_SEMAINES ; do
   Your browser does not support the video tag.
 </video>
 ' > $webDataDir/c$formatted_chap-s$formatted_seq-sequence.html
+		#To be used if you handle identifiers from Youtube
+# 		echo '<p>Si la s&eacute;quence ne s&#x27;affiche pas dans le cadre ci-dessous, vous
+#  	    devez la t&eacute;l&eacute;charger depuis le cartouche.</p>
+# 		<iframe width="640px" height="360px" src="https://www.youtube.com/embed/'$dailymotionid'" frameborder="0" allowfullscreen></iframe>
+# ' > $webDataDir/c$formatted_chap-s$formatted_seq-sequence.html
 
 		# le cartouche par défaut
 		case $seqtype in
