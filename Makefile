@@ -69,7 +69,8 @@ clean:
 	rm -f $(LOCAL_WEB_SITE)/svg/*
 	rm -f $(LOCAL_WEB_SITE)/content/semaine-*.html
 	rm -f $(LOCAL_WEB_SITE)/semaine-*.php
-	rm -f $(LOCAL_WEB_SITE)/pdf/*.pdf
+	rm -f $(LOCAL_WEB_SITE)/pdf/*slides.pdf
+	rm -f $(LOCAL_WEB_SITE)/pdf/cartographie*.pdf
 	rm -f $(LOCAL_WEB_SITE)/TdM/semaine*.html
 	rm -f $(LOCAL_WEB_SITE)/functions/functions.php
 	rm -f $(LOCAL_WEB_SITE)/functions/moddate.php
