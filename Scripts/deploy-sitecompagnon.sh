@@ -120,7 +120,7 @@ for semaine in $LISTE_SEMAINES  ; do
 	echo '<p>Elle est &eacute;galement disponible <a href="pdf/cartographie-'$formatted_semaine'.pdf">ici au format pdf</a>.' >>  $webcontentDir/semaine-$formatted_semaine.html
 	echo 'Vous pouvez acc&eacute;der aux s&eacute;quences et aux informations qui y sont associ&eacute;es' >>  $webcontentDir/semaine-$formatted_semaine.html
 	echo 'soit par le biais de la carte, soit via la table des mati&egrave;res ci-contre. La signification des' >>  $webcontentDir/semaine-$formatted_semaine.html
-	echo 'codes de couleur est situ&eacute;e juste apr&egrave; la carte.' >>  $webcontentDir/semaine-$formatted_semaine.html
+	echo 'codes de couleur est situ&eacute;e juste apr&egrave;s la carte.' >>  $webcontentDir/semaine-$formatted_semaine.html
 	echo '<div align="center"><?php	include("svg/cartographie-'$formatted_semaine'.svg");?></div>' >>  $webcontentDir/semaine-$formatted_semaine.html
 	echo '<?php 	include("content/legende-signalisation.html");?>' >>  $webcontentDir/semaine-$formatted_semaine.html
 	echo '<?php
