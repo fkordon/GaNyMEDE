@@ -226,7 +226,7 @@ for chapter in semaine-*.csv ; do
 		# il y a au moins un résumé et une vidéo
 		echo '   <vertical url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-resume"/>' >> "$output"
 		echo '   <vertical url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-video"/>' >> "$output"
-		if [ -f "$seqid-liens.html" -o -f "$seqid-extras.csv" ] ; then
+		if [ -f "links/$seqid-liens.html" -o -f "extra/$seqid-extras.csv" ] ; then
 			# des liens associés + extras le cas échéant
 			echo '   <vertical url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-liens"/>' >> "$output"
 			echo '<html display_name="Autres éléments" filename="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-liens-data"/>' >> "$html_dir/id-$formatted_chap-$formatted_seq-$seqid-liens-data.xml"
@@ -234,15 +234,15 @@ for chapter in semaine-*.csv ; do
 			echo '<vertical display_name="Liens utiles">' >> "$output"
 			echo '   <html url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-liens-data"/>' >> "$output"
 			echo '</vertical>' >> "$output")
-			if [ -f "$seqid-liens.html" ] ; then
+			if [ -f "links/$seqid-liens.html" ] ; then
 				(output="$html_dir/id-$formatted_chap-$formatted_seq-$seqid-liens-data.html"
 				echo '<h2>Liens utiles</h2>' >> "$output"
-				cat $seqid-liens.html >> "$output")
+				cat links/$seqid-liens.html >> "$output")
 			fi
-			if [ -f "$seqid-extras.csv" ] ; then
+			if [ -f "extra/$seqid-extras.csv" ] ; then
 				(output="$html_dir/id-$formatted_chap-$formatted_seq-$seqid-liens-data.html"
 				echo '<h2>Éléments complémentaires</h2>' >> "$output"
-				grep -a -v '^###' $seqid-extras.csv | (CRT_RUBRIQUE=""
+				grep -a -v '^###' extra/$seqid-extras.csv | (CRT_RUBRIQUE=""
 				while read LINE ; do
 					RUBRIQUE=$(echo $LINE | cut -d ',' -f 3)
 					TEXTE=$(echo $LINE | cut -d ',' -f 4)
