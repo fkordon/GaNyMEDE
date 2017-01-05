@@ -296,7 +296,7 @@ for chapter in semaine-*.csv ; do
 			fi
 		fi
 		echo '<h2><img src="/static/seq-'$visuelSeq'x50.png"><span class="'$style'"> Résumé de la séquence</span></h2>' >> "$output"
-		cat $seqid-resume.html >> "$output"
+		cat resumes/$seqid-resume.html >> "$output"
 		if [ "$motsclef" ] ; then
 			echo '<h2><span class="'$style'">Mots clefs</span></h2>' >> "$output"
 			echo "<p>$motsclef.</p>" >> "$output"
@@ -306,7 +306,7 @@ for chapter in semaine-*.csv ; do
 			if [ "$NO_PDF" ] ; then
 				echo '<p>Mode "léger" activé => les éléments "lourds" du MOOC ne sont pas déployées (supprimez le paramètre "-leger" dans la ligne de commande de deploy_mooc.sh).</p>' >> "$output"
 			else
-				cp $seqid-slides.pdf "$TARGET_DIR/static/transparents-$formatted_chap-$formatted_seq-$seqid.pdf"
+				cp slides/$seqid-slides.pdf "$TARGET_DIR/static/transparents-$formatted_chap-$formatted_seq-$seqid.pdf"
 				echo '<p>Le <a href="/static/transparents-'$formatted_chap'-'$formatted_seq'-'$seqid'.pdf">pdf des transparents présentés est disponible ici</a>.</p>' >> "$output"
 			fi
 		fi

@@ -3,7 +3,7 @@ BASE_URL=http://lip6.fr/Fabrice.Kordon    # URL sur le site cible
 # position relative locale du site compagnon de l'UE
 LOCAL_WEB_SITE=WebSite
 # nom sur le site cible du répertoire contenant le site compagnon
-REMOTE_WEB_SITE=5I452-2014
+REMOTE_WEB_SITE=5I452-2016
 
 
 # position locale relative du répertoire de cartographie
@@ -18,7 +18,7 @@ help:
 	@echo
 	@echo "map    : génération de la cartographie du cours"
 	@echo "web    : génération du site compagnon du cours"
-	@echo "deploy : déploiement sur une cible du site compagnon du cours"
+	# @echo "deploy : déploiement sur une cible du site compagnon du cours"
 	@echo "mooc   : construction de l'archive prête à être déployée"
 	@echo "clean  : suppression des fichiers générés"
 	@echo
@@ -43,7 +43,6 @@ web:
 
 # deployer le site web 
 deploy:
-	@make present WHAT="Déploiement du site compagnon de l'UE"
 	@mkdir $(HOME)/Desktop/$(REMOTE_WEB_SITE)
 	cp -r $(LOCAL_WEB_SITE)/* $(HOME)/Desktop/$(REMOTE_WEB_SITE)
 	@rm -rf $(HOME)/Desktop/$(REMOTE_WEB_SITE)/.svn
@@ -51,12 +50,12 @@ deploy:
 	@rm -f $(HOME)/Desktop/$(REMOTE_WEB_SITE)/.DS_Store
 	@rm -f $(HOME)/Desktop/$(REMOTE_WEB_SITE)/*/.DS_Store
 	@bash -c 'export COPYFILE_DISABLE=true ; cd $(HOME)/Desktop ; tar czf $(REMOTE_WEB_SITE).tgz $(REMOTE_WEB_SITE)'
-	scp $(HOME)/Desktop/$(REMOTE_WEB_SITE).tgz fkordon@pagesperso-systeme.lip6.fr:public_html
-	ssh fkordon@pagesperso-systeme.lip6.fr 'cd public_html; rm -rf $(REMOTE_WEB_SITE); tar xzf $(REMOTE_WEB_SITE).tgz ; rm -f $(REMOTE_WEB_SITE).tgz'
+	scp $(HOME)/Desktop/$(REMOTE_WEB_SITE).tgz fko@pagesperso-systeme.lip6.fr:public_html
+	ssh fko@pagesperso-systeme.lip6.fr 'cd public_html; rm -rf $(REMOTE_WEB_SITE); tar xzf $(REMOTE_WEB_SITE).tgz ; rm -f $(REMOTE_WEB_SITE).tgz'
 	@rm -rf $(HOME)/Desktop/$(REMOTE_WEB_SITE) $(HOME)/Desktop/$(REMOTE_WEB_SITE).tgz
 
 mooc:
-	@make present WHAT="Construction de l'archive de MOOC au format FUN"
+	@make present WHAT="Construction de l'archive de MOOC au format edx"
 	bash -c '$(SCRIPT_DIR)/deploy-mooc.sh'
 
 clean:
