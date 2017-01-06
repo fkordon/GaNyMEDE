@@ -12,13 +12,15 @@ DATA_DIR=ConstructionData
 CARTO_DIR=ConstructionData/Cartographie
 # position locale relative du répertoire contenant les scripts
 SCRIPT_DIR=Scripts
+# infrastructure associée au MOOC (actuellement edx ou fun)
+INFRASTRUCTURE=edx
 
 help:
 	@make present WHAT="Aide en ligne"
 	@echo
 	@echo "map    : génération de la cartographie du cours"
 	@echo "web    : génération du site compagnon du cours"
-	# @echo "deploy : déploiement sur une cible du site compagnon du cours"
+	@echo "deploy : déploiement sur une cible du site compagnon du cours"
 	@echo "mooc   : construction de l'archive prête à être déployée"
 	@echo "clean  : suppression des fichiers générés"
 	@echo
@@ -56,7 +58,7 @@ deploy:
 
 mooc:
 	@make present WHAT="Construction de l'archive de MOOC au format edx"
-	bash -c '$(SCRIPT_DIR)/deploy-mooc.sh'
+	bash -c '$(SCRIPT_DIR)/deploy-mooc-$(INFRASTRUCTURE).sh'
 
 clean:
 	@make present WHAT="Nettoyage des fichiers générés"
