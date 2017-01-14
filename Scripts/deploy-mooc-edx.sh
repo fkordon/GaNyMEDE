@@ -257,12 +257,51 @@ for chapter in semaine-*.csv ; do
 		echo '</vertical>' >> "$output"
 		# Generer le descriptif du fichier HTML du résumé et du "reste"
 		echo '<html filename="'id-$formatted_chap-$formatted_seq-$seqid-resume'" display_name="Raw HTML" editor="raw"/>' > $html_dir/id-$formatted_chap-$formatted_seq-$seqid-resume.xml
-		cat resumes/$seqid-resume.html > $html_dir/id-$formatted_chap-$formatted_seq-$seqid-resume.html
+		output="$html_dir/id-$formatted_chap-$formatted_seq-$seqid-resume.html"
+		case $seqtype in
+			"BASE") style="basecolor" 
+				visuelSeq="base";;
+			"OPTIONNEL") style="opticolor"
+				visuelSeq="opt";;
+			"DEMONSTRATION") style="democolor"
+				visuelSeq="demo";;
+			"ILLUSTRATION") style="illucolor"
+				visuelSeq="example";;
+			"EXERCICE") style="exercolor"
+				visuelSeq="exo";;
+		esac
+		echo '<link rel="stylesheet" type="text/css" href="/static/GaNyMEDE.css" />' > "$output"
+		if [ "$seqtype" = "OPTIONNEL" ] ; then
+			if [ "$(echo "$LINE" | cut -f 9)" ] ; then
+				echo '<p>Vous pouvez sauter cette séquence si vous avez les prérequis suivants: '$(echo "$LINE" | cut -f 9)'.</p>' >> "$output"
+			else
+				echo
+				echo "Warning, there is a missing prerequisise definition in $seqid (course $formatted_chap, sequence $formatted_seq)"
+				echo -n "   "
+			fi
+		fi
+		echo '<h2><img src="/static/seq-'$visuelSeq'x50.png"><span class="'$style'"> Résumé de la séquence</span></h2>' >> "$output"
+		cat resumes/$seqid-resume.html >> "$output"
+		if [ "$motsclef" ] ; then
+			echo '<h2><span class="'$style'">Mots clefs</span></h2>' >> "$output"
+			echo "<p>$motsclef.</p>" >> "$output"
+		fi
+		# Le fichier FHTM sous la vidéo (avec l'accès aux slides et, le cas échéant, les liens etc.)
+		output="$html_dir/id-$formatted_chap-$formatted_seq-$seqid-suite.html"
+		echo '<h2><span class="'$style'">Récupérer le pdf des transparents présentés</span></h2>' > $output
+		if [ -f "slides/$seqid-slides.pdf" ] ; then
+			cp slides/$seqid-slides.pdf "$TARGET_DIR/static/transparents-$formatted_chap-$formatted_seq-$seqid.pdf"
+			echo '<p>Le <a href="/static/transparents-'$formatted_chap'-'$formatted_seq'-'$seqid'.pdf">pdf des transparents présentés est disponible ici</a>.</p>' >> "$output"			
+		else
+			echo "WARNING - missing pdf for slides $seqid (c$formatted_chap/s$formatted_seq)"
+		fi
+		if [ -f "links/$seqid-liens.html" ] ; then
+			echo '<h2><span class="'$style'">Ressources utiles</span></h2>' >> "$output"
+			cat "links/$seqid-liens.html" >> "$output"
+		fi
 		echo '<html filename="'id-$formatted_chap-$formatted_seq-$seqid-suite'" display_name="Raw HTML" editor="raw"/>' > $html_dir/id-$formatted_chap-$formatted_seq-$seqid-suite.xml
-		echo '<p>Le texte qui suit</p>' > $html_dir/id-$formatted_chap-$formatted_seq-$seqid-suite.html
 		# Generer le descriptif de la vidéo
 		echo '<video youtube="1.00:'$videoid'" url_name="'id-$formatted_chap-$formatted_seq-$seqid-video'" display_name="Video" download_video="false" html5_sources="[]" sub="" youtube_id_1_0="'$videoid'"/>' > $video_dir/id-$formatted_chap-$formatted_seq-$seqid-video.xml
-		
 	done)
 	# on va egalement disposer d'une rubrique "bilan" avec juste un QCM permettant de cocher ce qui a été fait
 	echo '   <sequential url_name="semaine-'$formatted_chap'-bilan"/>' >> "$TARGET_DIR/chapter/$chap.xml"
@@ -289,7 +328,7 @@ for chapter in semaine-*.csv ; do
 			if [ "$typeseq" = "EXERCICE" ] ; then
 				echo '         <choice correct="true">J'"'"'ai réalisé l'"'"'exercice : '$entityName'</choice>' >> "$output"
 			else
-				echo '         <choice correct="true">J'"'"'ai regardé la vidéo : '$entityName'</choice>' >> "$output"
+				echo '         <choice correct="true">J'"'"'ai regardé la séquence : '$entityName'</choice>' >> "$output"
 				if [ -f "$seqid-qcm.csv" ] ; then
 					echo '            <choice correct="true">J'"'"'ai répondu au questionnaire associé à la vidéo : 'entityName'</choice>' >> "$output"
 				fi
