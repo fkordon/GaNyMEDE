@@ -10,7 +10,7 @@
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
+#    the Free Software Foundation, either version 3 of the License, xor
 #    (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -55,7 +55,7 @@ export COPYFILE_DISABLE=true
 if [ "$SEE_ALL" ] ; then
 	# indiquer une date de publication anterieure au début réel du MOOC pour
 	# tout voir sur le MOOC-bac-à-sable
-	export K_MOOC_START="2014-12-01T00:01:00Z"
+	export K_MOOC_START="2017-01-10T00:00:00+00:00"
 fi
 
 ######################################################################
@@ -129,8 +129,7 @@ mkdir "$TARGET_DIR"
 # creation de la structure de base de l'archive
 (
 	cd "$TARGET_DIR"
-	mkdir about chapter course discussion html info policies problem sequential static vertical
-	#mkdir about chapter course discussion html info policies problem sequential static vertical video
+	mkdir about assets chapter course html info policies problem sequential static vertical video
 )
 
 ######################################################################
@@ -145,9 +144,27 @@ cp $stdImgDir/*.jpg  "$TARGET_DIR/static"
 cp $webDir/images/seq-*50.png "$TARGET_DIR/static"
 cp $stdImgDir/GaNyMEDE.css "$TARGET_DIR/static"
 
-cp $syllDir/syllabus.html "$TARGET_DIR/about/overview.html"
+if [ -f $syllDir/syllabus.html ] ; then
+	cp $syllDir/syllabus.html "$TARGET_DIR/about/overview.html"
+else
+	echo "ERROR: missing file $syllDir/syllabus.html"
+fi
+if [ -f $syllDir/shortDescription.html ] ; then
+	cp $syllDir/shortDescription.html "$TARGET_DIR/about/short_description.html"
+else
+	echo "ERROR: missing file $syllDir/shortDescription.html"
+fi
 echo $K_TEASER_VIDEO_ID > "$TARGET_DIR/about/video.html"
 echo $K_EFFORT > "$TARGET_DIR/about/effort.html"
+echo > "$TARGET_DIR/about/description.html"
+echo > "$TARGET_DIR/about/duration.html"
+echo > "$TARGET_DIR/about/entrance_exam_enabled.html"
+echo > "$TARGET_DIR/about/entrance_exam_id.html"
+echo 50 > "$TARGET_DIR/about/entrance_exam_minimum_score_pct.html"
+echo > "$TARGET_DIR/about/subtitle.html"
+echo > "$TARGET_DIR/about/title.html"
+
+echo -n '<assets/>' > "$TARGET_DIR/assets/assets.xml"
 
 if [ -f $syllDir/doc-pedagogiques.html ] ; then
 	cp $syllDir/doc-pedagogiques.html "$TARGET_DIR/info/handouts.html"
@@ -156,6 +173,11 @@ else
 	echo "   WARNING: no pedagogical information (file $syllDir/doc-pedagogiques.html)"
 	echo
 fi
+echo > "$TARGET_DIR/info/updates.html"
+
+# Fichier d'acualités par défaut
+#echo '[]' > "$TARGET_DIR/info/updates.items.json"
+echo '[{"content" : "ceci est une actualit&ecute;","date" : "September 27, 2016", "id": 1, "status": "visible"}]' > "$TARGET_DIR/info/updates.items.json"
 
 ######################################################################
 # Si on veut déployer la cartographie
@@ -167,7 +189,7 @@ cp $cartoDir/cartographie.pdf "$TARGET_DIR/static"
 echo '<course url_name="'$K_MOOC_ID'" org="'$K_INSTITUTION'" course="'$K_ACCRONYM'"/>' > "$TARGET_DIR/course.xml"
 
 OUTPUT="$TARGET_DIR/course/${K_MOOC_ID}.xml"
-echo '<course course_image="pano_image.jpg" display_name="'$K_TITLE'" end="'$K_MOOC_END'" enrollment_end="'$K_ENROLL_END'" enrollment_start="'$K_ENROLL_START'" info_sidebar_name="Documents pédagogiques" ispublic="true" start="'$K_MOOC_START'">' > $OUTPUT
+echo '<course cert_html_view_enabled="true" display_name="'$K_TITLE'" language="en" start="&quot;'$K_ENROLL_START'&quot;">' > $OUTPUT
 (cd $dataDir
 for chapter in semaine-*.csv ; do
 	#chap=$(echo "$LINE" | cut -f 4 | tr "'\" |&,;#\\?" "_")
@@ -185,7 +207,7 @@ echo "Generating chapters"
 (cd $dataDir
 vertical_dir="$TARGET_DIR/vertical"
 html_dir="$TARGET_DIR/html"
-#video_dir="$TARGET_DIR/video"
+video_dir="$TARGET_DIR/video"
 problem_dir="$TARGET_DIR/problem"
 discussion_dir="$TARGET_DIR/discussion"
 for chapter in semaine-*.csv ; do
@@ -202,7 +224,7 @@ for chapter in semaine-*.csv ; do
 		# tout voir sur le MOOC-bac-à-sable
 		starting=$K_MOOC_START
 	fi
-	echo '<chapter display_name="'$chaptitle'" start="'$starting'">' >> "$TARGET_DIR/chapter/$chap.xml"
+	echo '<chapter display_name="'$chaptitle'" start="&quot;'$starting'&quot;">' >> "$TARGET_DIR/chapter/$chap.xml"
 	grep -a -v ^# $chapter| grep -a -v FIN | grep -a -v DEB | \
 	(while read LINE; do
 		echo -n "."
@@ -216,172 +238,48 @@ for chapter in semaine-*.csv ; do
 			starting=$K_MOOC_START
 		fi
 		motsclef=$(echo "$LINE" | cut -f 10)
-		dailymotionid=$(echo "$LINE" | cut -f 13)
+		videoid=$(echo "$LINE" | cut -f 13)
 		formatted_seq="$(format_number $sequence)"
 		# declaration de la rubrique dans le chapitre
 		echo '   <sequential url_name="semaine-'$formatted_chap'-rubrique-'$formatted_seq'-'$seqid'"/>' >> "$TARGET_DIR/chapter/$chap.xml"
 		# construction de la rubrique
 		output="$TARGET_DIR/sequential/semaine-$formatted_chap-rubrique-$formatted_seq-$seqid.xml"
-		echo '<sequential display_name="'$(echo "$LINE" | cut -f 4 | sed -e 's/\\n/ /g' | php -r 'while(($line=fgets(STDIN)) !== FALSE) echo html_entity_decode($line, ENT_QUOTES|ENT_HTML401);' | sed -e 's/&/et/g')'" start="'$starting'">' >> "$output"
-		# il y a au moins un résumé et une vidéo
-		echo '   <vertical url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-resume"/>' >> "$output"
-		echo '   <vertical url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-video"/>' >> "$output"
-		if [ -f "links/$seqid-liens.html" -o -f "extra/$seqid-extras.csv" ] ; then
-			# des liens associés + extras le cas échéant
-			echo '   <vertical url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-liens"/>' >> "$output"
-			echo '<html display_name="Autres éléments" filename="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-liens-data"/>' >> "$html_dir/id-$formatted_chap-$formatted_seq-$seqid-liens-data.xml"
-			(output="$vertical_dir/id-$formatted_chap-$formatted_seq-$seqid-liens.xml"
-			echo '<vertical display_name="Liens utiles">' >> "$output"
-			echo '   <html url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-liens-data"/>' >> "$output"
-			echo '</vertical>' >> "$output")
-			if [ -f "links/$seqid-liens.html" ] ; then
-				(output="$html_dir/id-$formatted_chap-$formatted_seq-$seqid-liens-data.html"
-				echo '<h2>Liens utiles</h2>' >> "$output"
-				cat links/$seqid-liens.html >> "$output")
-			fi
-			if [ -f "extra/$seqid-extras.csv" ] ; then
-				(output="$html_dir/id-$formatted_chap-$formatted_seq-$seqid-liens-data.html"
-				echo '<h2>Éléments complémentaires</h2>' >> "$output"
-				grep -a -v '^###' extra/$seqid-extras.csv | (CRT_RUBRIQUE=""
-				while read LINE ; do
-					RUBRIQUE=$(echo $LINE | cut -d ',' -f 3)
-					TEXTE=$(echo $LINE | cut -d ',' -f 4)
-					LIENS=$(echo $LINE | cut -d ',' -f 5)
-					if [ "$CRT_RUBRIQUE" != "$RUBRIQUE" ] ; then
-						if [ "$CRT_RUBRIQUE" ] ; then
-							echo '</ul>' >> "$output"
-						fi
-						CRT_RUBRIQUE="$RUBRIQUE"
-						echo '<p>'"$RUBRIQUE"' :</p>'>> "$output"
-						echo '<ul>'>> "$output"
-					fi
-					echo '   <li><a href="'"$LIENS"'">'"$TEXTE"'</a></li>' >> "$output"
-				done
-				echo '</ul>' >> "$output"))
-			fi
-		fi
-		if [ -f $seqid-qcm.csv ] ; then
-			echo '   <vertical url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-probleme"/>' >> "$output"
-		fi
+		echo '<sequential display_name="'$(echo "$LINE" | cut -f 4 | sed -e 's/\\n/ /g' | php -r 'while(($line=fgets(STDIN)) !== FALSE) echo html_entity_decode($line, ENT_QUOTES|ENT_HTML401);' | sed -e 's/&/et/g')'" start="&quot;'$starting'&quot;">' >> "$output"
+		# insérer la page associée à la séquence (il y a tout ce qu'il faut)
+		echo '   <vertical url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-lapage"/>' >> "$output"
 		echo '</sequential>' >> "$output"
-		# generer les descripteurs d'une sous-rubrique
-		# le résumé (obligatoire)
-		output="$vertical_dir/id-$formatted_chap-$formatted_seq-$seqid-resume.xml"
-		echo '<vertical display_name="Résumé de la séquence '$sequence' (cours '$numchap')">' >> "$output"
-		echo '   <html url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-resume-data"/>' >> "$output"
+		# Generer la page associee a la sequence (existe toujours)	
+		output="$vertical_dir/id-$formatted_chap-$formatted_seq-$seqid-lapage.xml"
+		echo '<vertical display_name="Page de la séquence '$sequence' (cours '$numchap')">' > "$output"
+		echo '   <html url_name="'id-$formatted_chap-$formatted_seq-$seqid-'resume"/>' >> "$output"
+		echo '   <video url_name="'id-$formatted_chap-$formatted_seq-$seqid-'video"/>' >> "$output"
+		echo '   <html url_name="'id-$formatted_chap-$formatted_seq-$seqid-'suite"/>' >> "$output"
 		echo '</vertical>' >> "$output"
-		# générer les fichiers du résumé
-		echo '<html display_name="Résumé de la séquence '$sequence' (cours '$numchap')" filename="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-resume-data"/>' >> "$html_dir/id-$formatted_chap-$formatted_seq-$seqid-resume-data.xml"
-		output="$html_dir/id-$formatted_chap-$formatted_seq-$seqid-resume-data.html"
-		case $seqtype in
-			"BASE") style="basecolor" 
-				visuelSeq="base";;
-			"OPTIONNEL") style="opticolor"
-				visuelSeq="opt";;
-			"DEMONSTRATION") style="democolor"
-				visuelSeq="demo";;
-			"ILLUSTRATION") style="illucolor"
-				visuelSeq="example";;
-			"EXERCICE") style="exercolor"
-				visuelSeq="exo";;
-		esac
-		echo '<link rel="stylesheet" type="text/css" href="/static/GaNyMEDE.css" />' > "$output"
-		if [ "$seqtype" = "OPTIONNEL" ] ; then
-			if [ "$(echo "$LINE" | cut -f 9)" ] ; then
-				echo '<p>Vous pouvez sauter cette séquence si vous avez les prérequis suivants: '$(echo "$LINE" | cut -f 9)'.</p>' >> "$output"
-			else
-				echo
-				echo "Warning, there is a missing prerequisise definition in $seqid (course $formatted_chap, sequence $formatted_seq)"
-				echo -n "   "
-			fi
-		fi
-		echo '<h2><img src="/static/seq-'$visuelSeq'x50.png"><span class="'$style'"> Résumé de la séquence</span></h2>' >> "$output"
-		cat resumes/$seqid-resume.html >> "$output"
-		if [ "$motsclef" ] ; then
-			echo '<h2><span class="'$style'">Mots clefs</span></h2>' >> "$output"
-			echo "<p>$motsclef.</p>" >> "$output"
-		fi
-		if [ -f "$seqid-slides.pdf" ] ; then
-			echo '<h2><span class="'$style'">Transparents (pdf)</span></h2>' >> "$output"
-			if [ "$NO_PDF" ] ; then
-				echo '<p>Mode "léger" activé => les éléments "lourds" du MOOC ne sont pas déployées (supprimez le paramètre "-leger" dans la ligne de commande de deploy_mooc.sh).</p>' >> "$output"
-			else
-				cp slides/$seqid-slides.pdf "$TARGET_DIR/static/transparents-$formatted_chap-$formatted_seq-$seqid.pdf"
-				echo '<p>Le <a href="/static/transparents-'$formatted_chap'-'$formatted_seq'-'$seqid'.pdf">pdf des transparents présentés est disponible ici</a>.</p>' >> "$output"
-			fi
-		fi
-		# la vidéo (obligatoire)
-		output="$vertical_dir/id-$formatted_chap-$formatted_seq-$seqid-video.xml"
-		echo '<vertical display_name="Vidéo de la séquence">' >> "$output"
-		echo '   <dmcloud url_name="'$dailymotionid'" display_name="Vidéo de la séquence" allow_download_video="True" id_video="'$dailymotionid'"/>' >> "$output"
-		echo '</vertical>' >> "$output"
-		# le QCM (optionnel)
-		# générer les fichiers du QCM si besoin est
-		if [ -f $seqid-qcm.csv ] ; then
-			output="$vertical_dir/id-$formatted_chap-$formatted_seq-$seqid-probleme.xml"
-			echo '<vertical display_name="Questionnaire de la séquence '$sequence' (cours '$numchap')">' >> "$output"
-			echo '   <problem url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-probleme-data"/>' >> "$output"
-			echo '</vertical>' >> "$output"
-			output="$problem_dir/id-$formatted_chap-$formatted_seq-$seqid-probleme-data.xml"
-			echo '<problem display_name="Questionnaire de la séquence '$sequence' (cours '$numchap')" markdown="null">' >> "$output"
-			grep -a -v ^# $seqid-qcm.csv | sort -n | while read QCMLINE ; do
-				numq=$(echo "$QCMLINE" | cut -f 4)
-				textq=$(echo "$QCMLINE" | cut -f 5)
-				typeq=$(echo "$QCMLINE" | cut -f 6)
-				for i in 1 2 3 4 5 6 7 8 9 10 ; do
-					repoq[$i]=$(echo "$QCMLINE" | cut -f $(expr $i + 6))
-				done
-				explq=$(echo "$QCMLINE" | cut -f 17)
-				echo '   <p>'$textq'</p>' >> "$output"
-				if [ "$typeq" = "1R" ] ; then
-					# 1 choix parmi R réponses
-					echo '      <multiplechoiceresponse>' >> "$output"
-					echo '         <choicegroup type="MultipleChoice">' >> "$output"
-				else
-					# N choix parmi R réponses
-					echo '      <choiceresponse>' >> "$output"
-					echo '         <checkboxgroup type="MultipleChoice">' >> "$output"
-				fi
-				for i in 1 2 3 4 5 6 7 8 9 10 ; do
-					if [ "${repoq[$i]}" ] ; then
-						if [ "_" != "$(echo ${repoq[$i]} | cut -b1)" ] ; then
-							# ce n'est pas une donne réponse (pas de _ au début)
-							echo '            <choice correct="false">'"${repoq[$i]}"'</choice>' >> "$output"
-						else
-							# c'est une donne réponse
-							echo '            <choice correct="true">'"$(echo ${repoq[$i]} | cut -d '_' -f 2)"'</choice>' >> "$output"
-						fi
-					fi
-				done
-				if [ "$typeq" = "1R" ] ; then
-					# 1 choix parmi R réponses
-					echo '         </choicegroup>' >> "$output"
-					echo '      </multiplechoiceresponse>' >> "$output"
-				else
-					# N choix parmi R réponses
-					echo '         </checkboxgroup>' >> "$output"
-					echo '      </choiceresponse>' >> "$output"
-				fi
-				echo '   <solution>' >> "$output"
-				echo '      <div class="detailed-solution">' >> "$output"
-				echo '         <p>'$explq'</p>' >> "$output"
-				echo '      </div>' >> "$output"
-				echo '   </solution>' >> "$output"
-			done
-			echo '</problem>' >> "$output"
-		fi
+		# Generer le descriptif du fichier HTML du résumé et du "reste"
+		echo '<html filename="'id-$formatted_chap-$formatted_seq-$seqid-resume'" display_name="Raw HTML" editor="raw"/>' > $html_dir/id-$formatted_chap-$formatted_seq-$seqid-resume.xml
+		cat resumes/$seqid-resume.html > $html_dir/id-$formatted_chap-$formatted_seq-$seqid-resume.html
+		echo '<html filename="'id-$formatted_chap-$formatted_seq-$seqid-suite'" display_name="Raw HTML" editor="raw"/>' > $html_dir/id-$formatted_chap-$formatted_seq-$seqid-suite.xml
+		echo '<p>Le texte qui suit</p>' > $html_dir/id-$formatted_chap-$formatted_seq-$seqid-suite.html
+		# Generer le descriptif de la vidéo
+		echo '<video youtube="1.00:'$videoid'" url_name="'id-$formatted_chap-$formatted_seq-$seqid-video'" display_name="Video" download_video="false" html5_sources="[]" sub="" youtube_id_1_0="'$videoid'"/>' > $video_dir/id-$formatted_chap-$formatted_seq-$seqid-video.xml
+		
 	done)
 	# on va egalement disposer d'une rubrique "bilan" avec juste un QCM permettant de cocher ce qui a été fait
 	echo '   <sequential url_name="semaine-'$formatted_chap'-bilan"/>' >> "$TARGET_DIR/chapter/$chap.xml"
 	output="$TARGET_DIR/sequential/semaine-$formatted_chap-bilan.xml"
 	echo '<sequential display_name="Bilan de la semaine '$numchap'">' >> "$output"
-	echo '   <problem url_name="semaine-'$formatted_chap'-bilan-data"/>' >> "$output"
+	echo '   <vertical url_name="semaine-'$formatted_chap'-bilan"/>' >> "$output"
 	echo '</sequential>' >> "$output"
-	output="$problem_dir/semaine-"$formatted_chap"-bilan-data.xml"
-	echo '<problem display_name="Bilan de la semaine '$numchap'" markdown="null">' >> "$output"
-	echo '   <p>Cochez les actions que vous avez effectuées cette semaine afin de faire un bilan et vous assurer de n'"'"'avoir rien oublié.</p>' >> "$output"
-	echo '      <choiceresponse>' >> "$output"
-	echo '         <checkboxgroup type="MultipleChoice">' >> "$output"
+	output="$TARGET_DIR/vertical/semaine-$formatted_chap-bilan.xml"
+	echo '<vertical display_name="Liste des choses à faire">' >> "$output"
+	echo '   <problem  url_name="semaine-'$formatted_chap'-bilan"/>' >> "$output"
+	echo '</vertical>' >> "$output"
+	output="$problem_dir/semaine-"$formatted_chap"-bilan.xml"
+	echo '<problem display_name="Checkboxes" markdown="null">' > "$output"
+	echo '<choiceresponse>' >> "$output"
+	echo '   <p>Il est emps de faire un bilan de votre semaine</p>' >> "$output"
+	echo '   <label>Cochez les actions que vous avez effectuées cette semaine afin de faire un bilan et vous assurer de n'"'"'avoir rien oublié.</label>' >> "$output"
+	echo '   <checkboxgroup>' >> "$output"
 	grep -a -v ^# $chapter| grep -a -v FIN | grep -a -v DEB | \
 		(while read LINE ; do
 			sequence=$(echo "$LINE" | cut -f 3)
@@ -389,21 +287,21 @@ for chapter in semaine-*.csv ; do
 			typeseq=$(echo "$LINE" | cut -f 5)
 			entityName=$(echo "$LINE" | cut -f 4 | sed -e 's/\\n/ /g' | php -r 'while(($line=fgets(STDIN)) !== FALSE) echo html_entity_decode($line, ENT_QUOTES|ENT_HTML401);' | sed -e 's/&/et/g')
 			if [ "$typeseq" = "EXERCICE" ] ; then
-				echo '            <choice correct="true">J'"'"'ai réalisé l'"'"'exercice : '$entityName'</choice>' >> "$output"
+				echo '         <choice correct="true">J'"'"'ai réalisé l'"'"'exercice : '$entityName'</choice>' >> "$output"
 			else
-				echo '            <choice correct="true">J'"'"'ai regardé la vidéo : '$entityName'</choice>' >> "$output"
+				echo '         <choice correct="true">J'"'"'ai regardé la vidéo : '$entityName'</choice>' >> "$output"
 				if [ -f "$seqid-qcm.csv" ] ; then
 					echo '            <choice correct="true">J'"'"'ai répondu au questionnaire associé à la vidéo : 'entityName'</choice>' >> "$output"
 				fi
 			fi
 		done)
-	echo '         </checkboxgroup>' >> "$output"
-	echo '      </choiceresponse>' >> "$output"
+	echo '   </checkboxgroup>' >> "$output"
 	echo '   <solution>' >> "$output"
 	echo '      <div class="detailed-solution">' >> "$output"
-	echo '         <p>J'"'"'ai donc effectué toutes les étapes de cette semaine.</p>' >> "$output"
+	echo "         L'idéal est de réaliser l'ensemble des activités proposées." >> "$output"
 	echo '      </div>' >> "$output"
 	echo '   </solution>' >> "$output"
+	echo '</choiceresponse>' >> "$output"
 	echo '</problem>' >> "$output"
 	echo '</chapter>' >> "$TARGET_DIR/chapter/$chap.xml"
 	echo
