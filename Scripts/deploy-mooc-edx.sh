@@ -301,7 +301,7 @@ for chapter in semaine-*.csv ; do
 		fi
 		echo '<html filename="'id-$formatted_chap-$formatted_seq-$seqid-suite'" display_name="Raw HTML" editor="raw"/>' > $html_dir/id-$formatted_chap-$formatted_seq-$seqid-suite.xml
 		if [ -f "extra/$seqid-extras.csv" ] ; then
-			echo '<h2><span class="'$style'">Éléments complémantaires</span></h2>' >> "$output"
+			echo '<h2><span class="'$style'">Éléments complémentaires</span></h2>' >> "$output"
 			(export SECT=""
 			# Attention, on doit supprimer les references a DeliveryBuilder (mode UPMC uniquement)
 			grep -v '###' "extra/$seqid-extras.csv" | grep -v 'DeliveryBuilder' | sort | while read L ; do
