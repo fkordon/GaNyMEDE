@@ -286,7 +286,7 @@ for chapter in semaine-*.csv ; do
 			echo '<h2><span class="'$style'">Mots clefs</span></h2>' >> "$output"
 			echo "<p>$motsclef.</p>" >> "$output"
 		fi
-		# Le fichier FHTM sous la vidéo (avec l'accès aux slides et, le cas échéant, les liens etc.)
+		# Le fichier HTML sous la vidéo (avec l'accès aux slides et, le cas échéant, les liens etc.)
 		output="$html_dir/id-$formatted_chap-$formatted_seq-$seqid-suite.html"
 		echo '<h2><span class="'$style'">Récupérer le pdf des transparents présentés</span></h2>' > $output
 		if [ -f "slides/$seqid-slides.pdf" ] ; then
@@ -300,6 +300,26 @@ for chapter in semaine-*.csv ; do
 			cat "links/$seqid-liens.html" >> "$output"
 		fi
 		echo '<html filename="'id-$formatted_chap-$formatted_seq-$seqid-suite'" display_name="Raw HTML" editor="raw"/>' > $html_dir/id-$formatted_chap-$formatted_seq-$seqid-suite.xml
+		if [ -f "extra/$seqid-extras.csv" ] ; then
+			echo '<h2><span class="'$style'">Éléments complémantaires</span></h2>' >> "$output"
+			(export SECT=""
+			# Attention, on doit supprimer les references a DeliveryBuilder (mode UPMC uniquement)
+			grep -v '###' "extra/$seqid-extras.csv" | grep -v 'DeliveryBuilder' | sort | while read L ; do
+				newsect=$(echo "$L" | cut -d ',' -f 3)
+				texte=$(echo "$L" | cut -d ',' -f 4)
+				url=$(echo "$L" | cut -d ',' -f 5)
+				if [ "$SECT" != "$newsect" ] ; then
+					if [ "$SECT" ] ; then
+						echo '</ul>' >> "$output"
+					fi
+					echo "<p>$newsect</p>" >> "$output"
+					SECT="$newsect"
+					echo '<ul>'  >> "$output"
+				fi
+				echo '   <li><a href="'$url'">'$texte'</a></li>' >> "$output"
+			done)
+			echo '</ul>' >> "$output"
+		fi
 		# Generer le descriptif de la vidéo
 		echo '<video youtube="1.00:'$videoid'" url_name="'id-$formatted_chap-$formatted_seq-$seqid-video'" display_name="Video" download_video="false" html5_sources="[]" sub="" youtube_id_1_0="'$videoid'"/>' > $video_dir/id-$formatted_chap-$formatted_seq-$seqid-video.xml
 	done)
