@@ -252,7 +252,9 @@ for chapter in semaine-*.csv ; do
 		output="$vertical_dir/id-$formatted_chap-$formatted_seq-$seqid-lapage.xml"
 		echo '<vertical display_name="Page de la séquence '$sequence' (cours '$numchap')">' > "$output"
 		echo '   <html url_name="'id-$formatted_chap-$formatted_seq-$seqid-'resume"/>' >> "$output"
-		echo '   <video url_name="'id-$formatted_chap-$formatted_seq-$seqid-'video"/>' >> "$output"
+		if [ "$videoid" ] ; then
+			echo '   <video url_name="'id-$formatted_chap-$formatted_seq-$seqid-'video"/>' >> "$output"
+		fi
 		echo '   <html url_name="'id-$formatted_chap-$formatted_seq-$seqid-'suite"/>' >> "$output"
 		echo '</vertical>' >> "$output"
 		# Generer le descriptif du fichier HTML du résumé et du "reste"
@@ -288,12 +290,15 @@ for chapter in semaine-*.csv ; do
 		fi
 		# Le fichier HTML sous la vidéo (avec l'accès aux slides et, le cas échéant, les liens etc.)
 		output="$html_dir/id-$formatted_chap-$formatted_seq-$seqid-suite.html"
-		echo '<h2><span class="'$style'">Récupérer le pdf des transparents présentés</span></h2>' > $output
-		if [ -f "slides/$seqid-slides.pdf" ] ; then
-			cp slides/$seqid-slides.pdf "$TARGET_DIR/static/transparents-$formatted_chap-$formatted_seq-$seqid.pdf"
-			echo '<p>Le <a href="/static/transparents-'$formatted_chap'-'$formatted_seq'-'$seqid'.pdf">pdf des transparents présentés est disponible ici</a>.</p>' >> "$output"			
-		else
-			echo "WARNING - missing pdf for slides $seqid (c$formatted_chap/s$formatted_seq)"
+		echo > "output"
+		if [ "$videoid" ] ; then
+			echo '<h2><span class="'$style'">Récupérer le pdf des transparents présentés</span></h2>' >> "$output"
+			if [ -f "slides/$seqid-slides.pdf" ] ; then
+				cp slides/$seqid-slides.pdf "$TARGET_DIR/static/transparents-$formatted_chap-$formatted_seq-$seqid.pdf"
+				echo '<p>Le <a href="/static/transparents-'$formatted_chap'-'$formatted_seq'-'$seqid'.pdf">pdf des transparents présentés est disponible ici</a>.</p>' >> "$output"			
+			else
+				echo "WARNING - missing pdf for slides $seqid (c$formatted_chap/s$formatted_seq)"
+			fi
 		fi
 		if [ -f "links/$seqid-liens.html" ] ; then
 			echo '<h2><span class="'$style'">Ressources utiles</span></h2>' >> "$output"
@@ -320,8 +325,10 @@ for chapter in semaine-*.csv ; do
 			done)
 			echo '</ul>' >> "$output"
 		fi
-		# Generer le descriptif de la vidéo
-		echo '<video youtube="1.00:'$videoid'" url_name="'id-$formatted_chap-$formatted_seq-$seqid-video'" display_name="Video" download_video="false" html5_sources="[]" sub="" youtube_id_1_0="'$videoid'"/>' > $video_dir/id-$formatted_chap-$formatted_seq-$seqid-video.xml
+		# Generer le descriptif de la vidéo si nécessaire
+		if [ "$videoid" ] ; then
+			echo '<video youtube="1.00:'$videoid'" url_name="'id-$formatted_chap-$formatted_seq-$seqid-video'" display_name="Video" download_video="false" html5_sources="[]" sub="" youtube_id_1_0="'$videoid'"/>' > $video_dir/id-$formatted_chap-$formatted_seq-$seqid-video.xml
+		fi
 	done)
 	# on va egalement disposer d'une rubrique "bilan" avec juste un QCM permettant de cocher ce qui a été fait
 	echo '   <sequential url_name="semaine-'$formatted_chap'-bilan"/>' >> "$TARGET_DIR/chapter/$chap.xml"
