@@ -247,6 +247,9 @@ for chapter in semaine-*.csv ; do
 		echo '<sequential display_name="'$(echo "$LINE" | cut -f 4 | sed -e 's/\\n/ /g' | php -r 'while(($line=fgets(STDIN)) !== FALSE) echo html_entity_decode($line, ENT_QUOTES|ENT_HTML401);' | sed -e 's/&/et/g')'" start="&quot;'$starting'&quot;">' >> "$output"
 		# insérer la page associée à la séquence (il y a tout ce qu'il faut)
 		echo '   <vertical url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-lapage"/>' >> "$output"
+		if [ -f "$seqid-qcm.csv" ] ; then
+			echo '   <vertical url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-quizz"/>' >> "$output"
+		fi
 		echo '</sequential>' >> "$output"
 		# Generer la page associee a la sequence (existe toujours)	
 		output="$vertical_dir/id-$formatted_chap-$formatted_seq-$seqid-lapage.xml"
@@ -325,6 +328,70 @@ for chapter in semaine-*.csv ; do
 			done)
 			echo '</ul>' >> "$output"
 		fi
+		# QCM si nécessaire
+		if [ -f "$seqid-qcm.csv" ] ; then
+			output=$vertical_dir'/id-'$formatted_chap'-'$formatted_seq'-'$seqid'-quizz.xml'
+			echo '<vertical display_name="Questionnaire de la séquence '$sequence' (cours '$numchap')">' > "$output"
+			grep -a -v ^# $seqid-qcm.csv | sort -n | while read QCMLINE ; do
+				numq=$(echo "$QCMLINE" | cut -f 4)
+				echo '   <problem url_name="id-'$formatted_chap'-'$formatted_seq'-'$seqid'-quizz-q'$numq'"/>' >> "$output"
+				textq=$(echo "$QCMLINE" | cut -f 5)
+				typeq=$(echo "$QCMLINE" | cut -f 6)
+				for i in 1 2 3 4 5 6 7 8 9 10 ; do
+					repoq[$i]=$(echo "$QCMLINE" | cut -f $(expr $i + 6))
+				done
+				explq=$(echo "$QCMLINE" | cut -f 17)
+				output2="$problem_dir/id-$formatted_chap-$formatted_seq-$seqid-quizz-q$numq.xml"
+				if [ "$typeq" = "1R" ] ; then
+					# 1 choix parmi R réponses
+					(echo '<problem display_name="Multiple Choice" markdown="null" max_attempts="1" showanswer="answered">'
+					echo '<multiplechoiceresponse>'
+					echo '   <p> </p>'
+					echo '   <label>'$textq'</label>'
+					echo '   <choicegroup type="MultipleChoice">'
+					for i in 1 2 3 4 5 6 7 8 9 10 ; do
+						if [ "${repoq[$i]}" ] ; then
+							if [ "_" != "$(echo ${repoq[$i]} | cut -b1)" ] ; then
+								echo '      <choice correct="false">'${repoq[$i]}'</choice>'
+							else
+								echo '      <choice correct="true">'$(echo ${repoq[$i]} | cut -d '_' -f 2)'</choice>'
+							fi
+						fi
+					done
+					echo '   </choicegroup>') > "$output2"
+				else
+					# N choix parmi R réponses
+					(echo '<problem display_name="Checkboxes" markdown="null" max_attempts="1" showanswer="answered">'
+					echo '<choiceresponse>'
+					echo '   <p> </p>'
+					echo '   <label>'$textq'</label>'
+					echo '   <checkboxgroup>'
+					for i in 1 2 3 4 5 6 7 8 9 10 ; do
+						if [ "${repoq[$i]}" ] ; then
+							if [ "_" != "$(echo ${repoq[$i]} | cut -b1)" ] ; then
+								echo '      <choice correct="false">'${repoq[$i]}'</choice>'
+							else
+								echo '      <choice correct="true">'$(echo ${repoq[$i]} | cut -d '_' -f 2)'</choice>'
+							fi
+						fi
+					done
+					echo '   </checkboxgroup>'
+					) > "$output2"
+				fi
+				echo '   <solution>' >> "$output2"
+				echo '      <div class="detailed-solution">' >> "$output2"
+				echo '         <p>'$explq'</p>'  >> "$output2"
+				echo '      </div>' >> "$output2"
+				echo '   </solution>' >> "$output2"
+				if [ "$typeq" = "1R" ] ; then
+					echo '</multiplechoiceresponse>' >> "$output2"
+				else
+					echo '</choiceresponse>' >> "$output2"
+				fi
+				echo '</problem>' >> "$output2"
+			done
+			echo '</vertical>' >> "$output"
+		fi
 		# Generer le descriptif de la vidéo si nécessaire
 		if [ "$videoid" ] ; then
 			echo '<video youtube="1.00:'$videoid'" url_name="'id-$formatted_chap-$formatted_seq-$seqid-video'" display_name="Video" download_video="false" html5_sources="[]" sub="" youtube_id_1_0="'$videoid'"/>' > $video_dir/id-$formatted_chap-$formatted_seq-$seqid-video.xml
@@ -364,7 +431,7 @@ for chapter in semaine-*.csv ; do
 	echo '   </checkboxgroup>' >> "$output"
 	echo '   <solution>' >> "$output"
 	echo '      <div class="detailed-solution">' >> "$output"
-	echo "         L'idéal est de réaliser l'ensemble des activités proposées." >> "$output"
+	echo "         <p>L'idéal est de réaliser l'ensemble des activités proposées.</p>" >> "$output"
 	echo '      </div>' >> "$output"
 	echo '   </solution>' >> "$output"
 	echo '</choiceresponse>' >> "$output"
