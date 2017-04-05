@@ -66,6 +66,7 @@ dataDir=ConstructionData
 cartoDir=$dataDir/Cartographie
 syllDir=$dataDir/Syllabus-MOOC
 stdImgDir=$dataDir/StandardImages
+subttlDir=$dataDir/sous-titres
 webDir=WebSite
 
 ######################################################################
@@ -137,6 +138,9 @@ mkdir "$TARGET_DIR"
 if [ "$(ls $syllDir/*.png 2> /dev/null)" ] ; then
 	cp $syllDir/*.png "$TARGET_DIR/static"
 fi
+if [ "$(ls $syllDir/*.pdf 2> /dev/null)" ] ; then
+	cp $syllDir/*.pdf "$TARGET_DIR/static"
+fi
 if [ "$(ls $syllDir/*.jpg 2> /dev/null)" ] ; then
 	cp $syllDir/*.jpg "$TARGET_DIR/static"
 fi
@@ -154,7 +158,7 @@ if [ -f $syllDir/shortDescription.html ] ; then
 else
 	echo "ERROR: missing file $syllDir/shortDescription.html"
 fi
-echo $K_TEASER_VIDEO_ID > "$TARGET_DIR/about/video.html"
+#echo $K_TEASER_VIDEO_ID > "$TARGET_DIR/about/video.html" # désactivé pour edx
 echo $K_EFFORT > "$TARGET_DIR/about/effort.html"
 echo > "$TARGET_DIR/about/description.html"
 echo > "$TARGET_DIR/about/duration.html"
@@ -304,7 +308,7 @@ for chapter in semaine-*.csv ; do
 			fi
 		fi
 		if [ -f "links/$seqid-liens.html" ] ; then
-			echo '<h2><span class="'$style'">Ressources utiles</span></h2>' >> "$output"
+			echo '<h2><span class="'$style'">Ressources utiles (hors de la plateforme edx)</span></h2>' >> "$output"
 			cat "links/$seqid-liens.html" >> "$output"
 		fi
 		echo '<html filename="'id-$formatted_chap-$formatted_seq-$seqid-suite'" display_name="Raw HTML" editor="raw"/>' > $html_dir/id-$formatted_chap-$formatted_seq-$seqid-suite.xml
@@ -394,7 +398,15 @@ for chapter in semaine-*.csv ; do
 		fi
 		# Generer le descriptif de la vidéo si nécessaire
 		if [ "$videoid" ] ; then
-			echo '<video youtube="1.00:'$videoid'" url_name="'id-$formatted_chap-$formatted_seq-$seqid-video'" display_name="Video" download_video="false" html5_sources="[]" sub="" youtube_id_1_0="'$videoid'"/>' > $video_dir/id-$formatted_chap-$formatted_seq-$seqid-video.xml
+			if [ -f "sous-titres/$seqid-FR.srt" ] ; then # sous-titres FR a ajouter (patch rapide)
+				echo '<video youtube="1.00:'$videoid'" url_name="'id-$formatted_chap-$formatted_seq-$seqid-video'" display_name="Video" download_track="true" download_video="false" edx_video_id="" html5_sources="[]" sub="" transcripts="{&quot;fr&quot;: &quot;'$seqid'-FR.srt&quot;}" youtube_id_1_0="'$videoid'">' > $video_dir/id-$formatted_chap-$formatted_seq-$seqid-video.xml
+				echo '   <transcript language="fr" src="'$seqid'-FR.srt"/>'>> $video_dir/id-$formatted_chap-$formatted_seq-$seqid-video.xml
+				echo '</video>' >> $video_dir/id-$formatted_chap-$formatted_seq-$seqid-video.xml
+				cp "sous-titres/$seqid-FR.srt" "$TARGET_DIR/static"
+			else
+				# pas de sous-titres
+				echo '<video youtube="1.00:'$videoid'" url_name="'id-$formatted_chap-$formatted_seq-$seqid-video'" display_name="Video" download_track="true" download_video="false" edx_video_id="" html5_sources="[]" sub="" transcripts="{&quot;fr&quot;: &quot;'$seqid'-FR.srt&quot;}" youtube_id_1_0="'$videoid'"/>' > $video_dir/id-$formatted_chap-$formatted_seq-$seqid-video.xml
+			fi
 		fi
 	done)
 	# on va egalement disposer d'une rubrique "bilan" avec juste un QCM permettant de cocher ce qui a été fait
