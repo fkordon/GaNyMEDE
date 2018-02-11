@@ -39,7 +39,7 @@ type "make" to discover the options of the Makefile.
 Warnings
 --------
 
-All of this is at a quite early stage, even if development started one year ago... a lot of modification was done
+All of this is at a quite early stage, even if development started in 2014... a lot of modification was done
 and there is a need for setting up a more proper version.
 
 Sorry, most of it is still in french (procrastination and lack of time ;-). I have added some "readme.txt" files in
